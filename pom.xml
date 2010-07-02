@@ -76,6 +76,12 @@
 					<configurationDirectory>conf</configurationDirectory>
 					<repositoryLayout>flat</repositoryLayout>
 					<repositoryName>lib</repositoryName>
+					<programs>
+						<program>
+							<mainClass>st.happy_camper.hbase.twitter.Streaming</mainClass>
+							<name>streaming</name>
+						</program>
+					</programs>
 				</configuration>
 			</plugin>
 			<plugin>
