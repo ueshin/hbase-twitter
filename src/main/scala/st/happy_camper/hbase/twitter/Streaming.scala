@@ -79,13 +79,15 @@ class Streaming(id: String, pw: String) {
 object Streaming {
   def main(args : Array[String]) {
     val streaming = new Streaming(args(0), args(1))
-    streaming.handlers += new HTableHandler
+    val handler = new HTableHandler
+    streaming.handlers += handler
     try {
       streaming.start
       Stream.continually(System.in.read) takeWhile(_ != -1)
+      streaming.close
     }
     finally {
-      streaming.close
+      handler.close
     }
   }
 }
