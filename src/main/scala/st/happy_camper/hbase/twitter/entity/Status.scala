@@ -18,7 +18,7 @@ class Status(
   val inReplyToScreenName: String,
   val user: Option[User]
 ) {
-  val key = "%016x".format(id)
+  val key = Status.createKey(id)
 }
 
 object Status {
@@ -46,5 +46,6 @@ object Status {
     }
   }
 
+  def createKey(id: Long) = "%016x".format(id)
   def createdAtDateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.US)
 }

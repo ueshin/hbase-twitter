@@ -1,17 +1,18 @@
 package st.happy_camper.hbase.twitter.handler
 
-import _root_.st.happy_camper.hbase.twitter.entity.{ Status, User }
+import _root_.st.happy_camper.hbase.twitter.entity.{ Status, User, DeleteStatus }
 import _root_.st.happy_camper.hbase.twitter.io.StatusWritable
 
 import _root_.scala.xml.XML
 
 import _root_.org.apache.hadoop.io.Writable
 
-import _root_.org.apache.hadoop.hbase.client.{ HTable, Get, Put }
+import _root_.org.apache.hadoop.hbase.client.{ HTable, Get, Put, Delete }
 import _root_.org.apache.hadoop.hbase.util.{ Bytes, Writables }
 
 class HTableHandler extends (String => Unit) {
 
+  private implicit def intToBytes(i: Int) = Bytes.toBytes(i)
   private implicit def longToBytes(l: Long) = Bytes.toBytes(l)
   private implicit def booeanToBytes(b: Boolean) = Bytes.toBytes(b)
   private implicit def stringToBytes(s: String) = Bytes.toBytes(s)
@@ -24,11 +25,9 @@ class HTableHandler extends (String => Unit) {
       case Status(status) =>
         status.user map {
           user => {
-            val get = new Get(user.key)
-            get.addFamily("user")
-            val result = table.get(get)
-
             val put = new Put(user.key)
+
+            val result = table.get(new Get(user.key).addFamily("user"))
 
             def putIfNotEqualsStringValue(family: String, qualifier: String, value: String) {
               if(!result.containsColumn(family, qualifier) ||
@@ -88,6 +87,9 @@ class HTableHandler extends (String => Unit) {
             table.put(put)
           }
         }
+      case DeleteStatus(delete) => {
+        table.delete(new Delete(delete.userKey).deleteColumns("status", delete.statusKey))
+      }
       case _ => println(xml)
     }
   }

@@ -34,7 +34,7 @@ class User(
   val lang: String,
   val contributorsEnabled: Boolean
 ) {
-  val key = "%016x".format(id)
+  val key = User.createKey(id)
 }
 
 object User {
@@ -69,5 +69,6 @@ object User {
     )
   }
 
+  def createKey(id: Long) = "%016x".format(id)
   def createdAtDateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.US)
 }
