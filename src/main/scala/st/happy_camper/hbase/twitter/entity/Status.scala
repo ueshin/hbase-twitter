@@ -17,7 +17,9 @@ class Status(
   val favorited: Boolean,
   val inReplyToScreenName: String,
   val user: Option[User]
-)
+) {
+  val key = "%016x".format(id)
+}
 
 object Status {
   def apply(node: Node) : Status = {
@@ -33,6 +35,15 @@ object Status {
       (node \ "in_reply_to_screen_name").text,
       try { Some(User((node \ "user")(0))) } catch { case e : IndexOutOfBoundsException => None }
     )
+  }
+
+  def unapply(node: Node) : Option[Status] = {
+    try {
+      Some(Status(node))
+    }
+    catch {
+      case _ => None
+    }
   }
 
   def createdAtDateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.US)

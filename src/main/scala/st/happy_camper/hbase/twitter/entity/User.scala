@@ -32,9 +32,10 @@ class User(
   val verified: Boolean,
   val statusesCount: Int,
   val lang: String,
-  val contributorsEnabled: Boolean,
-  val status: Option[Status]
-)
+  val contributorsEnabled: Boolean
+) {
+  val key = "%016x".format(id)
+}
 
 object User {
   def apply(node: Node) : User = {
@@ -64,8 +65,7 @@ object User {
       (node \ "verified").text.toBoolean,
       (node \ "statuses_count").text.toInt,
       (node \ "lang").text,
-      (node \ "contributors_enabled").text.toBoolean,
-      try { Some(Status((node \ "status")(0))) } catch { case e : IndexOutOfBoundsException => None }
+      (node \ "contributors_enabled").text.toBoolean
     )
   }
 
