@@ -16,7 +16,7 @@ class Status(
   val inReplyToUserId: Long,
   val favorited: Boolean,
   val inReplyToScreenName: String,
-  val user: Option[User]
+  val user: User
 ) {
   val key = Status.createKey(id)
 }
@@ -33,7 +33,7 @@ object Status {
       try { (node \ "in_reply_to_user_id").text.toLong } catch { case e : NumberFormatException => 0L },
       (node \ "favorited").text.toBoolean,
       (node \ "in_reply_to_screen_name").text,
-      try { Some(User((node \ "user")(0))) } catch { case e : IndexOutOfBoundsException => None }
+      User((node \ "user")(0))
     )
   }
 
