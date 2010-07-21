@@ -89,6 +89,10 @@
 							<mainClass>st.happy_camper.hbase.twitter.SourceCounter</mainClass>
 							<name>count-source</name>
 						</program>
+						<program>
+							<mainClass>st.happy_camper.hbase.twitter.TagCounter</mainClass>
+							<name>count-tag</name>
+						</program>
 					</programs>
 				</configuration>
 			</plugin>
