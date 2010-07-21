@@ -5,6 +5,8 @@ import _root_.st.happy_camper.hbase.twitter.entity.{ Status, User }
 import _root_.java.io.{ DataInput, DataOutput }
 import _root_.java.util.Date
 
+import _root_.org.apache.hadoop.hbase.util.Writables
+
 import _root_.org.apache.hadoop.io.{ Text, Writable, WritableUtils }
 
 class StatusWritable(var status: Status) extends Writable {
@@ -90,5 +92,14 @@ class StatusWritable(var status: Status) extends Writable {
         in.readBoolean()
       )
     )
+  }
+}
+
+object StatusWritable {
+
+  def unapply(b: Array[Byte]) = {
+    val writable = new StatusWritable
+    Writables.getWritable(b, writable)
+    Option(writable.status)
   }
 }

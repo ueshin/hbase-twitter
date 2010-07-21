@@ -9,7 +9,7 @@ import _root_.org.apache.hadoop.hbase.HBaseConfiguration
 import _root_.org.apache.hadoop.hbase.client.{ Scan, Result }
 import _root_.org.apache.hadoop.hbase.io.ImmutableBytesWritable
 import _root_.org.apache.hadoop.hbase.mapreduce.{ TableMapper, TableMapReduceUtil }
-import _root_.org.apache.hadoop.hbase.util.{ Bytes, Writables }
+import _root_.org.apache.hadoop.hbase.util.Bytes
 
 import _root_.org.apache.hadoop.fs.Path
 import _root_.org.apache.hadoop.io.{ Text, LongWritable }
@@ -23,18 +23,12 @@ object SourceCounter {
 
   class SourceCountMapper extends TableMapper[Text, LongWritable] {
 
-    private implicit def bytesToStatus(b: Array[Byte]) = {
-      val writable = new StatusWritable
-      Writables.getWritable(b, writable)
-      writable.status
-    }
-
     type Context = Mapper[ImmutableBytesWritable, Result, Text, LongWritable]#Context
 
     private val one = new LongWritable(1L)
 
     override def map(key: ImmutableBytesWritable, value: Result, context: Context) {
-      for((statusKey, status) <- value.getFamilyMap("status")) {
+      for((statusKey, StatusWritable(status)) <- value.getFamilyMap("status")) {
         context.write(new Text(status.source), one)
       }
     }
