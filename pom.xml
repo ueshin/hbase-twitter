@@ -116,6 +116,35 @@
 		</plugins>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>pseudo</id>
+			<build>
+				<resources>
+					<resource>
+						<directory>src/pseudo/resources</directory>
+					</resource>
+					<resource>
+						<directory>src/main/resources</directory>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+		<profile>
+			<id>production</id>
+			<build>
+				<resources>
+					<resource>
+						<directory>src/production/resources</directory>
+					</resource>
+					<resource>
+						<directory>src/main/resources</directory>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+	</profiles>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.scala-lang</groupId>
