@@ -2,6 +2,8 @@ package st.happy_camper.hbase.twitter
 
 import _root_.st.happy_camper.hbase.twitter.handler.HTableHandler
 
+import _root_.org.apache.commons.logging.LogFactory
+
 class Streaming(id: String, pw: String) {
 
   import _root_.java.io.InputStream
@@ -11,6 +13,8 @@ class Streaming(id: String, pw: String) {
   import _root_.scala.io.Source
 
   import _root_.scala.actors.{ Actor, TIMEOUT }
+
+  val Log = LogFactory.getLog(getClass)
 
   val url = new URL("http://stream.twitter.com/1/statuses/sample.xml?delimited=length")
 
@@ -27,7 +31,9 @@ class Streaming(id: String, pw: String) {
   def start {
     streaming.getState match {
       case Actor.State.New => {
-        in = url.openStream
+        val conn = url.openConnection
+        conn.setReadTimeout(10000)
+        in = conn.getInputStream
         streaming.start
       }
       case Actor.State.Terminated => throw new IllegalStateException("Streaming was closed.")
@@ -62,8 +68,13 @@ class Streaming(id: String, pw: String) {
       loop {
         receiveWithin(0) {
           case TIMEOUT => {
-            val state = readState
-            handlers foreach { handler => handler(state) }
+            try {
+              val state = readState
+              handlers foreach { handler => handler(state) }
+            }
+            catch {
+              case e => Log.error(e.getMessage, e); exit
+            }
           }
           case CLOSE => {
             reply()
