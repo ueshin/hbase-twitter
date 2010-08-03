@@ -31,9 +31,7 @@ class Streaming(id: String, pw: String) {
   def start {
     streaming.getState match {
       case Actor.State.New => {
-        val conn = url.openConnection
-        conn.setReadTimeout(10000)
-        in = conn.getInputStream
+        in = connect
         streaming.start
       }
       case Actor.State.Terminated => throw new IllegalStateException("Streaming was closed.")
@@ -51,6 +49,17 @@ class Streaming(id: String, pw: String) {
           in.close
         }
       }
+    }
+  }
+
+  private def connect : InputStream = {
+    try {
+      val conn = url.openConnection
+      conn.setReadTimeout(3000)
+      conn.getInputStream
+    }
+    catch {
+      case e => connect
     }
   }
 
@@ -73,7 +82,14 @@ class Streaming(id: String, pw: String) {
               handlers foreach { handler => handler(state) }
             }
             catch {
-              case e => Log.error(e.getMessage, e); exit
+              case e => {
+                Log.error(e.getMessage, e);
+                if(in != null) {
+                  in.close
+                }
+                in = connect
+                act
+              }
             }
           }
           case CLOSE => {
