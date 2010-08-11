@@ -9,7 +9,7 @@ import _root_.org.apache.hadoop.hbase.util.Writables
 
 import _root_.org.apache.hadoop.io.{ Text, Writable, WritableUtils }
 
-class StatusWritable(var status: Status) extends Writable {
+private class StatusWritable(var status: Status) extends Writable {
 
   def this() = this(null)
 
@@ -97,9 +97,18 @@ class StatusWritable(var status: Status) extends Writable {
 
 object StatusWritable {
 
+  def apply(status: Status) = {
+    Writables.getBytes(new StatusWritable(status))
+  }
+
   def unapply(b: Array[Byte]) = {
-    val writable = new StatusWritable
-    Writables.getWritable(b, writable)
-    Option(writable.status)
+    try {
+      val writable = new StatusWritable
+      Writables.getWritable(b, writable)
+      Option(writable.status)
+    }
+    catch {
+      case _ => None
+    }
   }
 }

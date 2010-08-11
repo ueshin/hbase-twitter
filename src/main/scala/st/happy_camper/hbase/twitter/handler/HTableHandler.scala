@@ -1,22 +1,19 @@
 package st.happy_camper.hbase.twitter.handler
 
-import _root_.st.happy_camper.hbase.twitter.entity.{ Status, User, DeleteStatus }
+import _root_.st.happy_camper.hbase.twitter.entity.{ Status, User, Delete }
 import _root_.st.happy_camper.hbase.twitter.io.StatusWritable
 
 import _root_.scala.xml.XML
 
 import _root_.org.apache.hadoop.io.Writable
 
-import _root_.org.apache.hadoop.hbase.client.{ HTable, Get, Put, Delete }
+import _root_.org.apache.hadoop.hbase.HConstants
+import _root_.org.apache.hadoop.hbase.client.{ HTable, Get, Put }
 import _root_.org.apache.hadoop.hbase.util.{ Bytes, Writables }
 
 class HTableHandler extends (String => Unit) {
 
-  private implicit def intToBytes(i: Int) = Bytes.toBytes(i)
-  private implicit def longToBytes(l: Long) = Bytes.toBytes(l)
-  private implicit def booeanToBytes(b: Boolean) = Bytes.toBytes(b)
   private implicit def stringToBytes(s: String) = Bytes.toBytes(s)
-  private implicit def writableToBytes(w: Writable) = Writables.getBytes(w)
 
   val table = new HTable("twitter")
 
@@ -39,21 +36,21 @@ class HTableHandler extends (String => Unit) {
         def putIfNotEqualsIntValue(family: String, qualifier: String, value: Int) {
           if(!result.containsColumn(family, qualifier) ||
              value != Bytes.toInt(result.getValue(family, qualifier))) {
-               put.add(family, qualifier, value)
+               put.add(family, qualifier, Bytes.toBytes(value))
              }
         }
 
         def putIfNotEqualsLongValue(family: String, qualifier: String, value: Long) {
           if(!result.containsColumn(family, qualifier) ||
              value != Bytes.toLong(result.getValue(family, qualifier))) {
-               put.add(family, qualifier, value)
+               put.add(family, qualifier, Bytes.toBytes(value))
              }
         }
 
         def putIfNotEqualsBooleanValue(family: String, qualifier: String, value: Boolean) {
           if(!result.containsColumn(family, qualifier) ||
              value != Bytes.toBoolean(result.getValue(family, qualifier))) {
-               put.add(family, qualifier, value)
+               put.add(family, qualifier, Bytes.toBytes(value))
              }
         }
 
@@ -83,12 +80,12 @@ class HTableHandler extends (String => Unit) {
         putIfNotEqualsStringValue("user", "lang", user.lang)
         putIfNotEqualsBooleanValue("user", "contributorsEnabled", user.contributorsEnabled)
 
-        put.add("status", status.key, new StatusWritable(status))
+        put.add("status", status.key, StatusWritable(status))
         table.put(put)
 
       }
-      case DeleteStatus(delete) => {
-        table.delete(new Delete(delete.userKey).deleteColumns("status", delete.statusKey))
+      case Delete(delete) => {
+        table.put(new Put(delete.userKey).add("status", delete.statusKey, HConstants.EMPTY_BYTE_ARRAY))
       }
       case _ => println(xml)
     }
