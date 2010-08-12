@@ -31,11 +31,15 @@ object TagTransposer {
         keyvalue => {
           val statusKey = Bytes.toString(keyvalue.getQualifier)
           val timestamp = keyvalue.getTimestamp
-          val StatusWritable(status) = keyvalue.getValue
-          HashTagRegexp findAllIn(status.text) foreach {
-            tag => {
-              context.write(key, new Put(tag.toLowerCase).add("timeline", userKey, timestamp, statusKey))
+          keyvalue.getValue match {
+            case StatusWritable(status) => {
+              HashTagRegexp findAllIn(status.text) foreach {
+                tag => {
+                  context.write(key, new Put(tag.toLowerCase).add("timeline", userKey, timestamp, statusKey))
+                }
+              }
             }
+            case _ =>
           }
         }
       }
