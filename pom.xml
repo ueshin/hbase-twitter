@@ -72,7 +72,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<extraJvmArguments>-server -Xmx512m</extraJvmArguments>
+					<extraJvmArguments>-server</extraJvmArguments>
 					<configurationDirectory>conf</configurationDirectory>
 					<repositoryLayout>flat</repositoryLayout>
 					<repositoryName>lib</repositoryName>
