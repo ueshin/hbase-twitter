@@ -1,7 +1,8 @@
 package st.happy_camper.hbase.twitter
 
-import _root_.st.happy_camper.hbase.twitter.io.StatusWritable
-import _root_.st.happy_camper.hbase.twitter.mapreduce.CountReducer
+import io.StatusWritable
+import mapreduce.CountReducer
+import util.HConversions._
 
 import _root_.scala.collection.JavaConversions._
 
@@ -18,8 +19,6 @@ import _root_.org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import _root_.org.apache.hadoop.util.GenericOptionsParser
 
 object TagCounter {
-
-  private implicit def stringToBytes(s: String) = Bytes.toBytes(s)
 
   class TagCountMapper extends TableMapper[Text, LongWritable] {
 
@@ -45,7 +44,8 @@ object TagCounter {
     val job = new Job(conf, "Tag Counter")
     job.setJarByClass(getClass)
 
-    TableMapReduceUtil.initTableMapperJob("twitter", new Scan().addFamily("status"), classOf[TagCountMapper], classOf[Text], classOf[LongWritable], job)
+    TableMapReduceUtil.initTableMapperJob("twitter", new Scan().addFamily("status"),
+                                          classOf[TagCountMapper], classOf[Text], classOf[LongWritable], job)
 
     job.setCombinerClass(classOf[CountReducer])
     job.setReducerClass(classOf[CountReducer])

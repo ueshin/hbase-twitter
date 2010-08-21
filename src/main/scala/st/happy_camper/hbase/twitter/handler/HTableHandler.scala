@@ -1,19 +1,18 @@
-package st.happy_camper.hbase.twitter.handler
+package st.happy_camper.hbase.twitter
+package handler
 
-import _root_.st.happy_camper.hbase.twitter.entity.{ Status, User, Delete }
-import _root_.st.happy_camper.hbase.twitter.io.StatusWritable
+import entity.{ Status, User, Delete }
+import io.StatusWritable
+import util.HConversions._
+
+import _root_.java.util.Arrays
 
 import _root_.scala.xml.XML
 
-import _root_.org.apache.hadoop.io.Writable
-
 import _root_.org.apache.hadoop.hbase.HConstants
 import _root_.org.apache.hadoop.hbase.client.{ HTable, Get, Put }
-import _root_.org.apache.hadoop.hbase.util.{ Bytes, Writables }
 
 class HTableHandler extends (String => Unit) {
-
-  private implicit def stringToBytes(s: String) = Bytes.toBytes(s)
 
   val table = new HTable("twitter")
 
@@ -26,59 +25,37 @@ class HTableHandler extends (String => Unit) {
 
         val result = table.get(new Get(user.key).addFamily("user"))
 
-        def putIfNotEqualsStringValue(family: String, qualifier: String, value: String) {
-          if(!result.containsColumn(family, qualifier) ||
-             value != Bytes.toString(result.getValue(family, qualifier))) {
-               put.add(family, qualifier, value)
-             }
+        def addIfNotEquals(family: String, qualifier: String, value: Array[Byte]) {
+          if(!Arrays.equals(result.getValue(family, qualifier), value)) {
+            put.add(family, qualifier, value)
+          }
         }
 
-        def putIfNotEqualsIntValue(family: String, qualifier: String, value: Int) {
-          if(!result.containsColumn(family, qualifier) ||
-             value != Bytes.toInt(result.getValue(family, qualifier))) {
-               put.add(family, qualifier, Bytes.toBytes(value))
-             }
-        }
-
-        def putIfNotEqualsLongValue(family: String, qualifier: String, value: Long) {
-          if(!result.containsColumn(family, qualifier) ||
-             value != Bytes.toLong(result.getValue(family, qualifier))) {
-               put.add(family, qualifier, Bytes.toBytes(value))
-             }
-        }
-
-        def putIfNotEqualsBooleanValue(family: String, qualifier: String, value: Boolean) {
-          if(!result.containsColumn(family, qualifier) ||
-             value != Bytes.toBoolean(result.getValue(family, qualifier))) {
-               put.add(family, qualifier, Bytes.toBytes(value))
-             }
-        }
-
-        putIfNotEqualsStringValue("user", "name", user.name)
-        putIfNotEqualsStringValue("user", "screenName", user.screenName)
-        putIfNotEqualsStringValue("user", "location", user.location)
-        putIfNotEqualsStringValue("user", "description", user.description)
-        putIfNotEqualsStringValue("user", "profileImageUrl", user.profileImageUrl)
-        putIfNotEqualsStringValue("user", "url", user.url)
-        putIfNotEqualsBooleanValue("user", "isProtected", user.isProtected)
-        putIfNotEqualsIntValue("user", "followersCount", user.followersCount)
-        putIfNotEqualsStringValue("user", "profileBackgroundColor", user.profileBackgroundColor)
-        putIfNotEqualsStringValue("user", "profileTextColor", user.profileTextColor)
-        putIfNotEqualsStringValue("user", "profileLinkColor", user.profileLinkColor)
-        putIfNotEqualsStringValue("user", "profileSidebarFillColor", user.profileSidebarFillColor)
-        putIfNotEqualsStringValue("user", "profileSidebarBorderColor", user.profileSidebarBorderColor)
-        putIfNotEqualsIntValue("user", "friendsCount", user.friendsCount)
-        putIfNotEqualsLongValue("user", "createdAt", user.createdAt.getTime)
-        putIfNotEqualsIntValue("user", "favouritesCount", user.favouritesCount)
-        putIfNotEqualsIntValue("user", "utcOffset", user.utcOffset)
-        putIfNotEqualsStringValue("user", "timeZone", user.timeZone)
-        putIfNotEqualsStringValue("user", "profileBackgroundImageUrl", user.profileBackgroundImageUrl)
-        putIfNotEqualsBooleanValue("user", "profileBackgroundTile", user.profileBackgroundTile)
-        putIfNotEqualsBooleanValue("user", "geoEnabled", user.geoEnabled)
-        putIfNotEqualsBooleanValue("user", "verified", user.verified)
-        putIfNotEqualsIntValue("user", "statusesCount", user.statusesCount)
-        putIfNotEqualsStringValue("user", "lang", user.lang)
-        putIfNotEqualsBooleanValue("user", "contributorsEnabled", user.contributorsEnabled)
+        addIfNotEquals("user", "name", user.name)
+        addIfNotEquals("user", "screenName", user.screenName)
+        addIfNotEquals("user", "location", user.location)
+        addIfNotEquals("user", "description", user.description)
+        addIfNotEquals("user", "profileImageUrl", user.profileImageUrl)
+        addIfNotEquals("user", "url", user.url)
+        addIfNotEquals("user", "isProtected", user.isProtected)
+        addIfNotEquals("user", "followersCount", user.followersCount)
+        addIfNotEquals("user", "profileBackgroundColor", user.profileBackgroundColor)
+        addIfNotEquals("user", "profileTextColor", user.profileTextColor)
+        addIfNotEquals("user", "profileLinkColor", user.profileLinkColor)
+        addIfNotEquals("user", "profileSidebarFillColor", user.profileSidebarFillColor)
+        addIfNotEquals("user", "profileSidebarBorderColor", user.profileSidebarBorderColor)
+        addIfNotEquals("user", "friendsCount", user.friendsCount)
+        addIfNotEquals("user", "createdAt", user.createdAt.getTime)
+        addIfNotEquals("user", "favouritesCount", user.favouritesCount)
+        addIfNotEquals("user", "utcOffset", user.utcOffset)
+        addIfNotEquals("user", "timeZone", user.timeZone)
+        addIfNotEquals("user", "profileBackgroundImageUrl", user.profileBackgroundImageUrl)
+        addIfNotEquals("user", "profileBackgroundTile", user.profileBackgroundTile)
+        addIfNotEquals("user", "geoEnabled", user.geoEnabled)
+        addIfNotEquals("user", "verified", user.verified)
+        addIfNotEquals("user", "statusesCount", user.statusesCount)
+        addIfNotEquals("user", "lang", user.lang)
+        addIfNotEquals("user", "contributorsEnabled", user.contributorsEnabled)
 
         put.add("status", status.key, StatusWritable(status))
         table.put(put)
@@ -95,3 +72,4 @@ class HTableHandler extends (String => Unit) {
     table.close
   }
 }
+

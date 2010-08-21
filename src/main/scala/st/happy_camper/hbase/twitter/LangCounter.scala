@@ -1,6 +1,7 @@
 package st.happy_camper.hbase.twitter
 
-import _root_.st.happy_camper.hbase.twitter.mapreduce.CountReducer
+import mapreduce.CountReducer
+import util.HConversions._
 
 import _root_.org.apache.hadoop.hbase.HBaseConfiguration
 import _root_.org.apache.hadoop.hbase.client.{ Scan, Result }
@@ -16,18 +17,14 @@ import _root_.org.apache.hadoop.util.GenericOptionsParser
 
 object LangCounter {
 
-  private implicit def stringToBytes(s: String) = Bytes.toBytes(s)
-
   class LangCountMapper extends TableMapper[Text, LongWritable] {
-
-    private implicit def bytesToText(b: Array[Byte]) = new Text(Bytes.toString(b))
 
     type Context = Mapper[ImmutableBytesWritable, Result, Text, LongWritable]#Context
 
     private val one = new LongWritable(1L)
 
     override def map(key: ImmutableBytesWritable, value: Result, context: Context) {
-      context.write(value.getValue("user", "lang"), one)
+      context.write(new Text(Bytes.toString(value.getValue("user", "lang"))), one)
     }
   }
 
@@ -38,7 +35,8 @@ object LangCounter {
     val job = new Job(conf, "Lang Counter")
     job.setJarByClass(getClass)
 
-    TableMapReduceUtil.initTableMapperJob("twitter", new Scan().addColumn("user", "lang"), classOf[LangCountMapper], classOf[Text], classOf[LongWritable], job)
+    TableMapReduceUtil.initTableMapperJob("twitter", new Scan().addColumn("user", "lang"),
+                                          classOf[LangCountMapper], classOf[Text], classOf[LongWritable], job)
 
     job.setCombinerClass(classOf[CountReducer])
     job.setReducerClass(classOf[CountReducer])

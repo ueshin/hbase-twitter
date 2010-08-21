@@ -1,6 +1,7 @@
 package st.happy_camper.hbase.twitter
 
-import _root_.st.happy_camper.hbase.twitter.io.StatusWritable
+import io.StatusWritable
+import util.HConversions._
 
 import _root_.java.text.SimpleDateFormat
 import _root_.java.util.Date
@@ -21,9 +22,6 @@ import _root_.org.apache.hadoop.util.GenericOptionsParser
 
 object TagTransposer {
 
-  private implicit def stringToBytes(s: String) = Bytes.toBytes(s)
-  private implicit def longToBytes(l: Long) = Bytes.toBytes(l)
-
   class TagTransposeMapper extends TableMapper[ImmutableBytesWritable, Put] {
 
     type Context = Mapper[ImmutableBytesWritable, Result, ImmutableBytesWritable, Put]#Context
@@ -40,7 +38,8 @@ object TagTransposer {
             case StatusWritable(status) => {
               HashTagRegexp findAllIn(status.text) foreach {
                 tag => {
-                  context.write(new ImmutableBytesWritable(tag.toLowerCase), new Put(tag.toLowerCase).add("timeline", userKey, timestamp, statusKey))
+                  context.write(new ImmutableBytesWritable(tag.toLowerCase),
+                                new Put(tag.toLowerCase).add("timeline", userKey, timestamp, statusKey))
                 }
               }
             }
@@ -86,8 +85,11 @@ object TagTransposer {
     val offset = (System.currentTimeMillis / (60*60*1000L))
     val scan = new Scan().addFamily("status").setTimeRange((offset - 1) * (60*60*1000L), offset * (60*60*1000L))
 //    val scan = new Scan().addFamily("status").setTimeRange(0L, offset * (60*60*1000L))
-    TableMapReduceUtil.initTableMapperJob("twitter", scan, classOf[TagTransposeMapper], classOf[ImmutableBytesWritable], classOf[Put], job)
-    TableMapReduceUtil.initTableReducerJob("tagtrend", classOf[TagTransposeReducer], job, classOf[HRegionPartitioner[ImmutableBytesWritable, Put]])
+    TableMapReduceUtil.initTableMapperJob("twitter", scan,
+                                          classOf[TagTransposeMapper], classOf[ImmutableBytesWritable], classOf[Put], job)
+    TableMapReduceUtil.initTableReducerJob("tagtrend",
+                                           classOf[TagTransposeReducer], job,
+                                           classOf[HRegionPartitioner[ImmutableBytesWritable, Put]])
 
     System.exit(if(job.waitForCompletion(true)) 0 else 1)
   }
