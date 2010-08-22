@@ -97,6 +97,10 @@
 							<mainClass>st.happy_camper.hbase.twitter.TagTransposer</mainClass>
 							<name>transpose-tag</name>
 						</program>
+						<program>
+							<mainClass>st.happy_camper.hbase.twitter.TweetHotTag</mainClass>
+							<name>tweet-hottag</name>
+						</program>
 					</programs>
 				</configuration>
 			</plugin>
