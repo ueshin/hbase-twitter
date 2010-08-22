@@ -46,7 +46,7 @@ object TweetHotTag {
         val score = count.foldLeft(Map.empty[String, Double]) {
           case (score, (tag, count)) => score + (tag -> count * (log(hours.size) - log(num(tag))))
         }
-        score.keys.toList.sortBy(score(_)).reverse.take(10).foreach(tag => println(tag + "\t" + score(tag)))
+        score.keys.toList.sortBy(score(_)).reverse.take(10).foreach(tag => println(tag + "\t" + score(tag) + " = " + count(tag) + " * ( log(" + hours.size + ") - log(" + num(tag) + ") ) "))
       }
       finally {
         scanner.close
