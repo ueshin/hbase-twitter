@@ -3,7 +3,6 @@ package handler
 
 import entity.{ Status, User, Delete }
 import io.StatusWritable
-import util.HConversions._
 
 import _root_.java.util.Arrays
 

@@ -1,37 +1,19 @@
 package st.happy_camper.hbase.twitter
 
-import io.StatusWritable
-import mapreduce.CountReducer
-import util.HConversions._
-
-import _root_.scala.collection.JavaConversions._
+import mapreduce.SourceCountMapper
 
 import _root_.org.apache.hadoop.hbase.HBaseConfiguration
-import _root_.org.apache.hadoop.hbase.client.{ Scan, Result }
-import _root_.org.apache.hadoop.hbase.io.ImmutableBytesWritable
-import _root_.org.apache.hadoop.hbase.mapreduce.{ TableMapper, TableMapReduceUtil }
-import _root_.org.apache.hadoop.hbase.util.Bytes
+import _root_.org.apache.hadoop.hbase.client.Scan
+import _root_.org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil
 
 import _root_.org.apache.hadoop.fs.Path
 import _root_.org.apache.hadoop.io.{ Text, LongWritable }
-import _root_.org.apache.hadoop.mapreduce.{ Job, Mapper }
+import _root_.org.apache.hadoop.mapreduce.Job
 import _root_.org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
+import _root_.org.apache.hadoop.mapreduce.lib.reduce.LongSumReducer
 import _root_.org.apache.hadoop.util.GenericOptionsParser
 
 object SourceCounter {
-
-  class SourceCountMapper extends TableMapper[Text, LongWritable] {
-
-    type Context = Mapper[ImmutableBytesWritable, Result, Text, LongWritable]#Context
-
-    private val one = new LongWritable(1L)
-
-    override def map(key: ImmutableBytesWritable, value: Result, context: Context) {
-      for((statusKey, StatusWritable(status)) <- value.getFamilyMap("status")) {
-        context.write(new Text(status.source), one)
-      }
-    }
-  }
 
   def main(args: Array[String]) {
     val conf = new HBaseConfiguration
@@ -43,8 +25,8 @@ object SourceCounter {
     TableMapReduceUtil.initTableMapperJob("twitter", new Scan().addFamily("status"),
                                           classOf[SourceCountMapper], classOf[Text], classOf[LongWritable], job)
 
-    job.setCombinerClass(classOf[CountReducer])
-    job.setReducerClass(classOf[CountReducer])
+    job.setCombinerClass(classOf[LongSumReducer[Text]])
+    job.setReducerClass(classOf[LongSumReducer[Text]])
 
     FileOutputFormat.setOutputPath(job, new Path(otherArgs(0)))
 

@@ -1,8 +1,7 @@
 package st.happy_camper.hbase.twitter
 
 import io.StatusWritable
-import mapreduce.CountReducer
-import util.HConversions._
+import mapreduce.TagCountMapper
 
 import _root_.scala.collection.JavaConversions._
 
@@ -16,26 +15,10 @@ import _root_.org.apache.hadoop.fs.Path
 import _root_.org.apache.hadoop.io.{ Text, LongWritable }
 import _root_.org.apache.hadoop.mapreduce.{ Job, Mapper }
 import _root_.org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
+import _root_.org.apache.hadoop.mapreduce.lib.reduce.LongSumReducer
 import _root_.org.apache.hadoop.util.GenericOptionsParser
 
 object TagCounter {
-
-  class TagCountMapper extends TableMapper[Text, LongWritable] {
-
-    type Context = Mapper[ImmutableBytesWritable, Result, Text, LongWritable]#Context
-
-    private val HashTagRegexp = """#[0-9a-zA-Z_]+""".r
-
-    private val one = new LongWritable(1L)
-
-    override def map(key: ImmutableBytesWritable, value: Result, context: Context) {
-      for((statusKey, StatusWritable(status)) <- value.getFamilyMap("status") if status.user.lang == "ja") {
-        HashTagRegexp findAllIn(status.text) foreach {
-          tag => context.write(new Text(tag.toLowerCase), one)
-        }
-      }
-    }
-  }
 
   def main(args: Array[String]) {
     val conf = new HBaseConfiguration
@@ -47,8 +30,8 @@ object TagCounter {
     TableMapReduceUtil.initTableMapperJob("twitter", new Scan().addFamily("status"),
                                           classOf[TagCountMapper], classOf[Text], classOf[LongWritable], job)
 
-    job.setCombinerClass(classOf[CountReducer])
-    job.setReducerClass(classOf[CountReducer])
+    job.setCombinerClass(classOf[LongSumReducer[Text]])
+    job.setReducerClass(classOf[LongSumReducer[Text]])
 
     FileOutputFormat.setOutputPath(job, new Path(otherArgs(0)))
 
