@@ -1,10 +1,5 @@
 package st.happy_camper.hbase.twitter
 
-import io.UserWritable
-
-import _root_.java.text.SimpleDateFormat
-import _root_.java.util.Date
-
 import _root_.scala.collection.JavaConversions._
 import _root_.scala.math.log
 
@@ -34,34 +29,29 @@ object TweetHotTag {
 
     val tagtrend = new HTable("tagtrend")
     try {
-      val scanner = tagtrend.getScanner(new Scan().addFamily("timeline"))
+      val scanner = tagtrend.getScanner(new Scan().addFamily("timeline_ja").setMaxVersions())
       try {
         val(count, num, hours) = scanner.foldLeft((Map.empty[String, Long], Map.empty[String, Set[Long]], Set[Long]())) {
           case ((count, num, hours), result) => {
             val tag = Bytes.toString(result.getRow)
             result.raw.foldLeft((count, num, hours)) {
               case ((count, num, hours), keyvalue) => {
-                keyvalue.getValue match {
-                  case UserWritable(user) if user.lang == "ja" => {
-                    val timestamp = keyvalue.getTimestamp
-                    val hour = (limit - timestamp) / (60*60*1000L);
-                    (
-                      if(hour==0L) { count + (tag -> (count.getOrElse(tag, 0L) + 1L)) } else { count },
-                      num + (tag -> (num.getOrElse(tag, Set.empty[Long]) + hour)),
-                      hours + hour
-                    )
-                  }
-                  case _ => (count, num, hours)
-                }
+                val timestamp = keyvalue.getTimestamp
+                val hour = (limit - timestamp) / (60*60*1000L);
+                (
+                  if(hour==0L) { count + (tag -> (count.getOrElse(tag, 0L) + 1L)) } else { count },
+                  num + (tag -> (num.getOrElse(tag, Set.empty[Long]) + hour)),
+                  hours + hour
+                )
               }
             }
           }
         }
         val score = count.foldLeft(Map.empty[String, Double]) {
-          case (score, (tag, count)) => score + (tag -> count * (log(hours.size) - log(num(tag).size)))
+          case (score, (tag, count)) => score + (tag -> count * (1 - (log(num(tag).size) / log(hours.size))))
         }
-        score.keys.toList.sortBy(score(_)).reverse.take(10).foreach(tag => println(tag + "\t" + score(tag) + " = " + count(tag) + " * ( log(" + hours.size + ") - log(" + num(tag).size + ") ) "))
-      }
+        score.keys.toList.sortBy(score(_)).reverse.take(10).foreach(tag => println(tag + "\t" + score(tag) + " = " + count(tag) + " * ( 1 - ( log(" + num(tag).size + ") / log(" + hours.size + ") ) ) "))
+        }
       finally {
         scanner.close
       }
