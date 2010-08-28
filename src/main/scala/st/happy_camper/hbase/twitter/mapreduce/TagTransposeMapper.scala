@@ -1,7 +1,7 @@
 package st.happy_camper.hbase.twitter
 package mapreduce
 
-import io.{ StatusWritable, UserWritable }
+import io.StatusWritable
 
 import _root_.org.apache.hadoop.hbase.client.{ Result, Put }
 import _root_.org.apache.hadoop.hbase.io.ImmutableBytesWritable
@@ -18,7 +18,7 @@ class TagTransposeMapper extends TableMapper[ImmutableBytesWritable, Put] with M
           HashTagRegexp findAllIn(status.text) foreach {
             tag => {
               context.write(new ImmutableBytesWritable(tag.toLowerCase),
-                            new Put(tag.toLowerCase).add("timeline", status.key, keyvalue.getTimestamp, UserWritable(status.user)))
+                            new Put(tag.toLowerCase).add("timeline_" + status.user.lang, status.user.key, keyvalue.getTimestamp, status.key))
             }
           }
         }

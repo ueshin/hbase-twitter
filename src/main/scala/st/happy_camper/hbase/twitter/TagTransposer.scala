@@ -1,13 +1,13 @@
 package st.happy_camper.hbase.twitter
 
-import mapreduce.{ TagTransposeMapper, TagTransposeReducer }
+import mapreduce.TagTransposeMapper
 
 import _root_.java.util.Date
 
 import _root_.org.apache.hadoop.hbase.HBaseConfiguration
 import _root_.org.apache.hadoop.hbase.client.{ HTable, Get, Scan, Put }
 import _root_.org.apache.hadoop.hbase.io.ImmutableBytesWritable
-import _root_.org.apache.hadoop.hbase.mapreduce.{ TableMapReduceUtil, HRegionPartitioner }
+import _root_.org.apache.hadoop.hbase.mapreduce.{ HRegionPartitioner, IdentityTableReducer, TableMapReduceUtil }
 import _root_.org.apache.hadoop.hbase.util.Bytes
 
 import _root_.org.apache.hadoop.fs.Path
@@ -36,11 +36,11 @@ object TagTransposer {
       TableMapReduceUtil.setNumReduceTasks("tagtrend", job)
 
       val now = new Date().getTime
-      val scan = new Scan().addFamily("status").setTimeRange(limit - (limit % (60*60*1000L)), now)
+      val scan = new Scan().addFamily("status").setTimeRange(limit, now).setMaxVersions()
       TableMapReduceUtil.initTableMapperJob("twitter", scan,
                                             classOf[TagTransposeMapper], classOf[ImmutableBytesWritable], classOf[Put], job)
       TableMapReduceUtil.initTableReducerJob("tagtrend",
-                                             classOf[TagTransposeReducer], job,
+                                             classOf[IdentityTableReducer], job,
                                              classOf[HRegionPartitioner[ImmutableBytesWritable, Put]])
 
       if(job.waitForCompletion(true)) {
