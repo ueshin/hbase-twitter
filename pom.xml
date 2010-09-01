@@ -82,18 +82,6 @@
 							<name>streaming</name>
 						</program>
 						<program>
-							<mainClass>st.happy_camper.hbase.twitter.LangCounter</mainClass>
-							<name>count-lang</name>
-						</program>
-						<program>
-							<mainClass>st.happy_camper.hbase.twitter.SourceCounter</mainClass>
-							<name>count-source</name>
-						</program>
-						<program>
-							<mainClass>st.happy_camper.hbase.twitter.TagCounter</mainClass>
-							<name>count-tag</name>
-						</program>
-						<program>
 							<mainClass>st.happy_camper.hbase.twitter.TagTransposer</mainClass>
 							<name>transpose-tag</name>
 						</program>
