@@ -86,6 +86,10 @@
 							<name>transpose-tag</name>
 						</program>
 						<program>
+							<mainClass>st.happy_camper.hbase.twitter.TagScoring</mainClass>
+							<name>scoring-tag</name>
+						</program>
+						<program>
 							<mainClass>st.happy_camper.hbase.twitter.TweetHotTag</mainClass>
 							<name>tweet-hottag</name>
 						</program>
