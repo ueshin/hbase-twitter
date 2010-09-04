@@ -8,3 +8,6 @@ create 'tagtrend',
   { NAME => 'timeline_de', VERSIONS => java.lang.Integer::MAX_VALUE }, { NAME => 'score_de' },
   { NAME => 'timeline_fr', VERSIONS => java.lang.Integer::MAX_VALUE }, { NAME => 'score_fr' },
   { NAME => 'timeline_it', VERSIONS => java.lang.Integer::MAX_VALUE }, { NAME => 'score_it' }
+
+create 'languages',
+  { NAME => 'ja' }, { NAME => 'en' }, { NAME => 'es' }, { NAME => 'de' }, { NAME => 'fr' }, { NAME => 'it' }
