@@ -3,7 +3,6 @@ package st.happy_camper.hbase.twitter
 import mapreduce.TagScoringMapper
 
 import _root_.java.text.SimpleDateFormat
-import _root_.java.util.concurrent.TimeUnit.{ DAYS, HOURS }
 
 import _root_.org.apache.hadoop.hbase.HBaseConfiguration
 import _root_.org.apache.hadoop.hbase.client.{ HTable, Get, Scan, Put }
@@ -16,7 +15,8 @@ import _root_.org.apache.hadoop.util.GenericOptionsParser
 
 object TagScoring {
 
-  val RangeDays = 7
+  private val HourToMillis = 60*60*1000L
+  private val DayToMillis = 24*HourToMillis
 
   def main(args: Array[String]) {
     val conf = new HBaseConfiguration
@@ -30,21 +30,20 @@ object TagScoring {
     catch {
       case e: ArrayIndexOutOfBoundsException => {
         val now = System.currentTimeMillis
-        now - ( now % HOURS.toMillis(1) )
+        now - ( now % HourToMillis )
       }
     }
 
     if(yet(conf, lang, dateFormat.format(target)) && limit(conf) >= target) {
       conf.set("lang", lang)
       conf.setLong("target", target)
-      conf.setInt("rangeDays", RangeDays)
 
       val job = new Job(conf, "Tag Scoring")
       job.setJarByClass(getClass)
 
       TableMapReduceUtil.setNumReduceTasks("tagtrend", job)
       TableMapReduceUtil.initTableMapperJob("tagtrend",
-                                            new Scan().addFamily("timeline_" + lang).setTimeRange(target - DAYS.toMillis(RangeDays), target).setMaxVersions(),
+                                            new Scan().addFamily("timeline_" + lang).setTimeRange(target - DayToMillis, target).setMaxVersions(),
                                             classOf[TagScoringMapper], classOf[ImmutableBytesWritable], classOf[Put], job)
       TableMapReduceUtil.initTableReducerJob("tagtrend",
                                              classOf[IdentityTableReducer], job,
