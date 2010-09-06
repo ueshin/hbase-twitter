@@ -10,4 +10,4 @@ create 'tagtrend',
   { NAME => 'timeline_it', VERSIONS => java.lang.Integer::MAX_VALUE }, { NAME => 'score_it' }
 
 create 'languages',
-  { NAME => 'ja' }, { NAME => 'en' }, { NAME => 'es' }, { NAME => 'de' }, { NAME => 'fr' }, { NAME => 'it' }
+  { NAME => 'en' }, { NAME => 'ja' }, { NAME => 'es' }, { NAME => 'de' }, { NAME => 'fr' }, { NAME => 'it' }
