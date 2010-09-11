@@ -10,9 +10,7 @@ import _root_.org.apache.hadoop.hbase.util.Writables
 
 import _root_.org.apache.hadoop.io.{ Text, Writable, WritableUtils }
 
-private class StatusWritable(var status: Status) extends Writable {
-
-  def this() = this(null)
+private class StatusWritable(var status: Status = null) extends Writable {
 
   def write(out: DataOutput) {
     StatusWritable.write(out, status)

@@ -10,9 +10,7 @@ import _root_.org.apache.hadoop.hbase.util.Writables
 
 import _root_.org.apache.hadoop.io.{ Text, Writable, WritableUtils }
 
-private class UserWritable(var user: User) extends Writable {
-
-  def this() = this(null)
+private class UserWritable(var user: User = null) extends Writable {
 
   def write(out: DataOutput) {
     UserWritable.write(out, user)

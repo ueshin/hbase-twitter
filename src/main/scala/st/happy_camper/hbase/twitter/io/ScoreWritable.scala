@@ -12,9 +12,7 @@ import _root_.org.apache.hadoop.hbase.util.Writables
 import _root_.org.apache.hadoop.io.{ Writable, WritableUtils }
 
 
-private class ScoreWritable(var score: Score) extends Writable {
-
-  def this() = this(null)
+private class ScoreWritable(var score: Score = null) extends Writable {
 
   def write(out: DataOutput) {
     ScoreWritable.write(out, score)
