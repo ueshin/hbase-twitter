@@ -33,23 +33,16 @@ object TagTransposer {
         val job = new Job(conf, "Tag Transposer")
         job.setJarByClass(getClass)
 
-        TableMapReduceUtil.setNumReduceTasks("tagtrend", job)
-
         val now = new Date().getTime
         val scan = new Scan().addFamily("status").setTimeRange(limit, now).setMaxVersions()
+        configuration.put(new Put("TagTransposer").add("property", "limit", now))
+
+        job.setNumReduceTasks(0)
         TableMapReduceUtil.initTableMapperJob("twitter", scan,
                                               classOf[TagTransposeMapper], classOf[ImmutableBytesWritable], classOf[Put], job)
-        TableMapReduceUtil.initTableReducerJob("tagtrend",
-                                               classOf[IdentityTableReducer], job,
-                                               classOf[HRegionPartitioner[ImmutableBytesWritable, Put]])
+        TableMapReduceUtil.initTableReducerJob("tagtrend", null, job)
 
-        if(job.waitForCompletion(true)) {
-          configuration.put(new Put("TagTransposer").add("property", "limit", now))
-          System.exit(0)
-        }
-        else {
-          System.exit(1)
-        }
+        System.exit(if(job.waitForCompletion(true)) 0 else 1)
       }
     }
   }
