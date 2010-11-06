@@ -21,38 +21,29 @@ object TagTransposer {
     val conf = new HBaseConfiguration
     val otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs
 
-    val configuration = new HTable(conf, "configuration")
-    try {
-      val limit = try {
-        Bytes.toLong(configuration.get(new Get("TagTransposer").addColumn("property", "limit")).value)
-      }
-      catch {
-        case _ => 0L
-      }
+    new HTable(conf, "configuration").open {
+      configuration => {
+        val limit = try {
+          Bytes.toLong(configuration.get(new Get("TagTransposer").addColumn("property", "limit")).value)
+        }
+        catch {
+          case _ => 0L
+        }
 
-      val job = new Job(conf, "Tag Transposer")
-      job.setJarByClass(getClass)
+        val job = new Job(conf, "Tag Transposer")
+        job.setJarByClass(getClass)
 
-      TableMapReduceUtil.setNumReduceTasks("tagtrend", job)
-
-      val now = new Date().getTime
-      val scan = new Scan().addFamily("status").setTimeRange(limit, now).setMaxVersions()
-      TableMapReduceUtil.initTableMapperJob("twitter", scan,
-                                            classOf[TagTransposeMapper], classOf[ImmutableBytesWritable], classOf[Put], job)
-      TableMapReduceUtil.initTableReducerJob("tagtrend",
-                                             classOf[IdentityTableReducer], job,
-                                             classOf[HRegionPartitioner[ImmutableBytesWritable, Put]])
-
-      if(job.waitForCompletion(true)) {
+        val now = new Date().getTime
+        val scan = new Scan().addFamily("status").setTimeRange(limit, now).setMaxVersions()
         configuration.put(new Put("TagTransposer").add("property", "limit", now))
-        System.exit(0)
+
+        job.setNumReduceTasks(0)
+        TableMapReduceUtil.initTableMapperJob("twitter", scan,
+                                              classOf[TagTransposeMapper], classOf[ImmutableBytesWritable], classOf[Put], job)
+        TableMapReduceUtil.initTableReducerJob("tagtrend", null, job)
+
+        System.exit(if(job.waitForCompletion(true)) 0 else 1)
       }
-      else {
-        System.exit(1)
-      }
-    }
-    finally {
-      configuration.close
     }
   }
 }

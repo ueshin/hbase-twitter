@@ -13,8 +13,8 @@ package object twitter {
   implicit def floatToBytes(f: Float)     = Bytes.toBytes(f)
   implicit def doubleToBytes(d: Double)   = Bytes.toBytes(d)
 
-  class EnsureClose(val closable: { def close() }) {
-    def open[A](f: { def close() } => A ) = {
+  class EnsureClose[C <: { def close() }](val closable: C) {
+    def open[A](f: C => A) = {
       try {
         f(closable)
       }
@@ -23,5 +23,5 @@ package object twitter {
       }
     }
   }
-  implicit def ensureClose(closable: { def close() }) = new EnsureClose(closable)
+  implicit def ensureClose[C <: { def close() }](closable: C) = new EnsureClose(closable)
 }

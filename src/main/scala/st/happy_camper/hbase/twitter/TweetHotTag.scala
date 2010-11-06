@@ -33,9 +33,9 @@ object TweetHotTag {
     }
 
     new HTable(conf, "tagtrend").open {
-      case tagtrend: HTable => {
+      tagtrend => {
         tagtrend.getScanner(new Scan().addColumn("score_" + lang, TagScoring.dateFormat.format(target))).open {
-          case scanner: ResultScanner => {
+          scanner => {
             val score = scanner.map {
               result => {
                 val tag = Bytes.toString(result.getRow)

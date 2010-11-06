@@ -38,16 +38,14 @@ object TagScoring {
       conf.set("lang", lang)
       conf.setLong("target", target)
 
-      val job = new Job(conf, "Tag Scoring")
+      val job = new Job(conf, "Tag Scoring " + lang)
       job.setJarByClass(getClass)
 
-      TableMapReduceUtil.setNumReduceTasks("tagtrend", job)
+      job.setNumReduceTasks(0)
       TableMapReduceUtil.initTableMapperJob("tagtrend",
                                             new Scan().addFamily("timeline_" + lang).setTimeRange(target - DayToMillis, target).setMaxVersions(),
                                             classOf[TagScoringMapper], classOf[ImmutableBytesWritable], classOf[Put], job)
-      TableMapReduceUtil.initTableReducerJob("tagtrend",
-                                             classOf[IdentityTableReducer], job,
-                                             classOf[HRegionPartitioner[ImmutableBytesWritable, Put]])
+      TableMapReduceUtil.initTableReducerJob("tagtrend", null, job)
 
       System.exit(if(job.waitForCompletion(true)) 0 else 1)
     }
@@ -56,13 +54,13 @@ object TagScoring {
   def dateFormat = new SimpleDateFormat("yyyyMMddHH")
 
   private def yet(conf: HBaseConfiguration, lang: String, target: String) = new HTable(conf, "languages").open {
-    case languages: HTable => {
+    languages => {
       languages.get(new Get("TagScoring").addColumn(lang, target)).isEmpty
     }
   }
 
   private def limit(conf: HBaseConfiguration) = new HTable(conf, "configuration").open {
-    case configuration: HTable => {
+    configuration => {
       try {
         Bytes.toLong(configuration.get(new Get("TagTransposer").addColumn("property", "limit")).value)
       }
