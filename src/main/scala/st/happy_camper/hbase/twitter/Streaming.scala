@@ -1,38 +1,42 @@
 package st.happy_camper.hbase.twitter
 
-import _root_.st.happy_camper.hbase.twitter.handler.HTableHandler
+import handler.HTableHandler
 
+import _root_.scala.actors.{ Actor, DaemonActor, TIMEOUT }
+import _root_.scala.collection.mutable.ListBuffer
+import _root_.scala.io.Source
+import _root_.scala.util.Random
+
+import _root_.org.apache.commons.httpclient.{ HttpClient, UsernamePasswordCredentials, ConnectTimeoutException }
+import _root_.org.apache.commons.httpclient.auth.AuthScope
+import _root_.org.apache.commons.httpclient.methods.GetMethod
 import _root_.org.apache.commons.logging.LogFactory
 
 class Streaming(id: String, pw: String) {
 
-  import _root_.java.io.InputStream
-  import _root_.java.net.{ Authenticator, PasswordAuthentication, URL }
-
-  import _root_.scala.collection.mutable.ListBuffer
-  import _root_.scala.io.Source
-
-  import _root_.scala.actors.{ Actor, TIMEOUT }
-
   val Log = LogFactory.getLog(getClass)
 
-  val url = new URL("http://stream.twitter.com/1/statuses/sample.xml?delimited=length")
-
-  Authenticator.setDefault(new Authenticator {
-    override def getPasswordAuthentication = {
-      new PasswordAuthentication(id, pw.toCharArray)
-    }
-  })
+  val url = "http://stream.twitter.com/1/statuses/sample.xml?delimited=length"
 
   val handlers = ListBuffer[String => Unit]()
 
-  private var in: InputStream = null
+  private val rnd = new Random
+
+  private val httpClient = new HttpClient
+  httpClient.getHttpConnectionManager.getParams.setConnectionTimeout(5*1000)
+  httpClient.getHttpConnectionManager.getParams.setSoTimeout(90*1000)
+  httpClient.getParams.setAuthenticationPreemptive(true)
+  httpClient.getState.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(id, pw))
+
+  private var get: GetMethod = null
 
   def start {
     streaming.getState match {
       case Actor.State.New => {
-        in = connect
-        streaming.start
+        get = connect
+        if(get != null) {
+          streaming.start
+        }
       }
       case Actor.State.Terminated => throw new IllegalStateException("Streaming was closed.")
       case _ => throw new IllegalStateException("Streaming has already been started.")
@@ -45,33 +49,97 @@ class Streaming(id: String, pw: String) {
       case Actor.State.Terminated => throw new IllegalStateException("Streaming was closed.")
       case _ => {
         streaming !? CLOSE
-        if(in != null) {
-          in.close
+        if(get != null) {
+          get.releaseConnection
         }
       }
     }
   }
 
-  private def connect : InputStream = {
+  @scala.annotation.tailrec
+  private def connect : GetMethod = {
+    val get = new GetMethod(url)
     try {
-      val conn = url.openConnection
-      conn.setReadTimeout(3000)
-      conn.getInputStream
+      return httpClient.executeMethod(get) match {
+        case 200 => {
+          Log.info("Connected.")
+          get
+        }
+        case 401 => {
+          Log.warn("401 Unauthorized.")
+          null
+        }
+        case 403 => {
+          Log.warn("403 Forbidden.")
+          null
+        }
+        case 404 => {
+          Log.warn("404 Unknown.")
+          null
+        }
+        case 406 => {
+          Log.warn("406 Not Acceptable.")
+          null
+        }
+        case 413 => {
+          Log.warn("413 Too Long.")
+          null
+        }
+        case 416 => {
+          Log.warn("416 Range Unacceptable.")
+          null
+        }
+        case 420 => {
+          Log.warn("420 Rate Limited.")
+          val wait = rnd.nextInt(60) + 240
+          Log.info("Retry after %d seconds.".format(wait))
+          Thread.sleep(wait * 1000)
+          throw Continue
+        }
+        case 500 => {
+          Log.warn("500 Server Internal Error.")
+          Log.info("Retry after 60 seconds.")
+          Thread.sleep(60 * 1000)
+          throw Continue
+        }
+        case 503 => {
+          Log.warn("503 Service Overloaded.")
+          Log.info("Retry after 60 seconds.")
+          Thread.sleep(60 * 1000)
+          throw Continue
+        }
+        case sc => throw new IllegalStateException("Unknown status code: " + sc + ".")
+      }
     }
     catch {
-      case e => connect
+      case e: ConnectTimeoutException => {
+        Log.error(e.getMessage, e)
+        val wait = rnd.nextInt(20) + 20
+        Log.info("Retry after %d seconds.".format(wait))
+        Thread.sleep(wait * 1000)
+      }
+      case Continue => 
+      case e => Log.error(e.getMessage, e)
     }
+    get.releaseConnection
+    connect
   }
 
   private case class CLOSE()
 
-  private object streaming extends Actor {
+  private object streaming extends DaemonActor {
     def act = {
+      val in = get.getResponseBodyAsStream
       val source = Source.fromInputStream(in)
 
-      def readState = {
-        val length = source.getLine(1).replaceAll("\\s", "").toInt
-        source.take(length) mkString
+      def readState : String = {
+        val length = source.getLine(1).replaceAll("\\s", "")
+        if(length != "") {
+          source.take(length.toInt) mkString
+        }
+        else {
+          readState
+        }
       }
 
       loop {
@@ -84,15 +152,17 @@ class Streaming(id: String, pw: String) {
             catch {
               case e => {
                 Log.error(e.getMessage, e);
-                if(in != null) {
-                  in.close
+                in.close
+                if(get != null) {
+                  get.releaseConnection
                 }
-                in = connect
+                get = connect
                 act
               }
             }
           }
           case CLOSE => {
+            in.close
             reply()
             exit
           }
@@ -101,6 +171,7 @@ class Streaming(id: String, pw: String) {
     }
   }
 
+  private object Continue extends Exception
 }
 
 object Streaming {
