@@ -10,6 +10,7 @@ import _root_.scala.util.Random
 import _root_.org.apache.commons.httpclient.{ HttpClient, UsernamePasswordCredentials, ConnectTimeoutException }
 import _root_.org.apache.commons.httpclient.auth.AuthScope
 import _root_.org.apache.commons.httpclient.methods.GetMethod
+
 import _root_.org.apache.commons.logging.LogFactory
 
 class Streaming(id: String, pw: String) {
@@ -49,9 +50,6 @@ class Streaming(id: String, pw: String) {
       case Actor.State.Terminated => throw new IllegalStateException("Streaming was closed.")
       case _ => {
         streaming !? CLOSE
-        if(get != null) {
-          get.releaseConnection
-        }
       }
     }
   }
@@ -129,8 +127,7 @@ class Streaming(id: String, pw: String) {
 
   private object streaming extends DaemonActor {
     def act = {
-      val in = get.getResponseBodyAsStream
-      val source = Source.fromInputStream(in)
+      val source = Source.fromInputStream(get.getResponseBodyAsStream)
 
       def readState : String = {
         val length = source.getLine(1).replaceAll("\\s", "")
@@ -152,17 +149,13 @@ class Streaming(id: String, pw: String) {
             catch {
               case e => {
                 Log.error(e.getMessage, e);
-                in.close
-                if(get != null) {
-                  get.releaseConnection
-                }
+                get.releaseConnection
                 get = connect
                 act
               }
             }
           }
           case CLOSE => {
-            in.close
             reply()
             exit
           }
