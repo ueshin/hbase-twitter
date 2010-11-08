@@ -4,7 +4,7 @@
 	<artifactId>hbase-twitter</artifactId>
 	<packaging>jar</packaging>
 	<name>hbase-twitter</name>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.1.1</version>
 
 	<inceptionYear>2010</inceptionYear>
 	<licenses>
@@ -29,9 +29,9 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:svn:https://happy-camper.st/svn/hadoop/tags/hbase-twitter-0.1.0</connection>
-		<developerConnection>scm:svn:https://happy-camper.st/svn/hadoop/tags/hbase-twitter-0.1.0</developerConnection>
-		<url>http://hadoop.happy-camper.st/browser/tags/hbase-twitter-0.1.0</url>
+		<connection>scm:svn:https://happy-camper.st/svn/hadoop/tags/hbase-twitter-0.1.1</connection>
+		<developerConnection>scm:svn:https://happy-camper.st/svn/hadoop/tags/hbase-twitter-0.1.1</developerConnection>
+		<url>http://hadoop.happy-camper.st/browser/tags/hbase-twitter-0.1.1</url>
 	</scm>
 	<issueManagement>
 		<system>trac</system>
