@@ -29,9 +29,9 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:svn:https://happy-camper.st/svn/hadoop/tags/hbase-twitter-0.1.0</connection>
-		<developerConnection>scm:svn:https://happy-camper.st/svn/hadoop/tags/hbase-twitter-0.1.0</developerConnection>
-		<url>http://hadoop.happy-camper.st/browser/tags/hbase-twitter-0.1.0</url>
+		<connection>scm:svn:https://happy-camper.st/svn/hadoop/branches/hbase-twitter-0.1.x</connection>
+		<developerConnection>scm:svn:https://happy-camper.st/svn/hadoop/branches/hbase-twitter-0.1.x</developerConnection>
+		<url>http://hadoop.happy-camper.st/browser/branches/hbase-twitter-0.1.x</url>
 	</scm>
 	<issueManagement>
 		<system>trac</system>
