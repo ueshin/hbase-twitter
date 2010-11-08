@@ -110,14 +110,13 @@ class Streaming(id: String, pw: String) {
       }
     }
     catch {
-      case e: ConnectTimeoutException => {
+      case Continue => 
+      case e => {
         Log.error(e.getMessage, e)
         val wait = rnd.nextInt(20) + 20
         Log.info("Retry after %d seconds.".format(wait))
         Thread.sleep(wait * 1000)
       }
-      case Continue => 
-      case e => Log.error(e.getMessage, e)
     }
     get.releaseConnection
     connect
