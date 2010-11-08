@@ -1,11 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>st.happy_camper.hbase</groupId>
 	<artifactId>hbase-twitter</artifactId>
 	<packaging>jar</packaging>
 	<name>hbase-twitter</name>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.3</version>
 
 	<inceptionYear>2010</inceptionYear>
 	<licenses>
@@ -30,9 +29,9 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:svn:https://happy-camper.st/svn/hadoop/branches/hbase-twitter-0.0.x</connection>
-		<developerConnection>scm:svn:https://happy-camper.st/svn/hadoop/branches/hbase-twitter-0.0.x</developerConnection>
-		<url>http://hadoop.happy-camper.st/browser/branches/hbase-twitter-0.0.x</url>
+		<connection>scm:svn:https://happy-camper.st/svn/hadoop/tags/hbase-twitter-0.0.3</connection>
+		<developerConnection>scm:svn:https://happy-camper.st/svn/hadoop/tags/hbase-twitter-0.0.3</developerConnection>
+		<url>http://hadoop.happy-camper.st/browser/tags/hbase-twitter-0.0.3</url>
 	</scm>
 	<issueManagement>
 		<system>trac</system>
@@ -241,6 +240,11 @@
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
