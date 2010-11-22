@@ -228,14 +228,19 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.hadoop</groupId>
+			<groupId>org.apache.hbase</groupId>
 			<artifactId>hbase</artifactId>
-			<version>0.20.6</version>
+			<version>0.90.0-candidate-0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
 			<artifactId>zookeeper</artifactId>
-			<version>3.2.2</version>
+			<version>3.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>r6</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
