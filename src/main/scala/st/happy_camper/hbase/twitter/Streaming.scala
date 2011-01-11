@@ -17,7 +17,7 @@ class Streaming(id: String, pw: String) {
 
   val Log = LogFactory.getLog(getClass)
 
-  val url = "http://stream.twitter.com/1/statuses/sample.xml?delimited=length"
+  val url = "http://stream.twitter.com/1/statuses/sample.json?delimited=length"
 
   val handlers = ListBuffer[String => Unit]()
 

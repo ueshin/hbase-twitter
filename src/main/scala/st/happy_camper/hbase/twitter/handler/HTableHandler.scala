@@ -6,17 +6,17 @@ import io.StatusWritable
 
 import _root_.java.util.Arrays
 
-import _root_.scala.xml.XML
-
 import _root_.org.apache.hadoop.hbase.HConstants
 import _root_.org.apache.hadoop.hbase.client.{ HTable, Get, Put }
+
+import _root_.dispatch.json.Js
 
 class HTableHandler extends (String => Unit) {
 
   val table = new HTable("twitter")
 
-  def apply(xml: String) {
-    XML.loadString(xml) match {
+  def apply(json: String) {
+    Js(json) match {
       case Status(status) => {
         val user = status.user
 
@@ -63,7 +63,7 @@ class HTableHandler extends (String => Unit) {
       case Delete(delete) => {
         table.put(new Put(delete.userKey).add("status", delete.statusKey, HConstants.EMPTY_BYTE_ARRAY))
       }
-      case _ => println(xml)
+      case _ => println(json)
     }
   }
 

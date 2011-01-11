@@ -253,6 +253,16 @@
 			<version>3.1</version>
 		</dependency>
 		<dependency>
+			<groupId>net.debasishg</groupId>
+			<artifactId>sjson_2.8.0</artifactId>
+			<version>0.8</version>
+		</dependency>
+		<dependency>
+			<groupId>net.databinder</groupId>
+			<artifactId>dispatch-json_2.8.0</artifactId>
+			<version>0.7.8</version>
+		</dependency>
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.6.0</version>

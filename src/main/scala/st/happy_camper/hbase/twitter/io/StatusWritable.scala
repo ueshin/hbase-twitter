@@ -34,7 +34,7 @@ object StatusWritable {
       Option(writable.status)
     }
     catch {
-      case _ => None
+      case e => None
     }
   }
 

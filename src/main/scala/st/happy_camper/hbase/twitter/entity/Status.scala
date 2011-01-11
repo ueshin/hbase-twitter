@@ -4,7 +4,9 @@ import _root_.java.util.Date
 import _root_.java.util.Locale
 import _root_.java.text.SimpleDateFormat
 
-import _root_.scala.xml.Node
+import _root_.dispatch.json._
+import _root_.sjson.json._
+import _root_.sjson.json.JsonSerialization._
 
 class Status(
   val createdAt: Date,
@@ -22,24 +24,37 @@ class Status(
 }
 
 object Status {
-  def apply(node: Node) : Status = {
-    new Status(
-      createdAtDateFormat.parse((node \ "created_at").text),
-      (node \ "id").text.toLong,
-      (node \ "text").text,
-      (node \ "source").text,
-      (node \ "truncated").text.toBoolean,
-      try { (node \ "in_reply_to_status_id").text.toLong } catch { case e : NumberFormatException => 0L },
-      try { (node \ "in_reply_to_user_id").text.toLong } catch { case e : NumberFormatException => 0L },
-      (node \ "favorited").text.toBoolean,
-      (node \ "in_reply_to_screen_name").text,
-      User((node \ "user")(0))
-    )
+
+  private object StatusProtocol extends DefaultProtocol {
+
+    implicit object StatusReads extends Reads[Status] {
+      def reads(json: JsValue) = json match {
+        case JsObject(m) => new Status(
+          createdAtDateFormat.parse(fromjson[String](m(JsString("created_at")))),
+          fromjson[Long](m(JsString("id"))),
+          fromjson[String](m(JsString("text"))),
+          fromjson[String](m(JsString("source"))),
+          fromjson[Boolean](m(JsString("truncated"))),
+          try { fromjson[Long](m(JsString("in_reply_to_status_id"))) } catch { case _ => 0L },
+          try { fromjson[Long](m(JsString("in_reply_to_user_id"))) } catch { case _ => 0L },
+          fromjson[Boolean](m(JsString("favorited"))),
+          try { fromjson[String](m(JsString("in_reply_to_screen_name"))) } catch { case _ => "" },
+          User(m(JsString("user")))
+        )
+        case _ => throw new RuntimeException("Status expected")
+      }
+    }
   }
 
-  def unapply(node: Node) : Option[Status] = {
+  import StatusProtocol._
+
+  def apply(json: JsValue) : Status = {
+    fromjson[Status](json)
+  }
+
+  def unapply(json: JsValue) : Option[Status] = {
     try {
-      Some(Status(node))
+      Some(Status(json))
     }
     catch {
       case _ => None

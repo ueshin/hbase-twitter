@@ -4,7 +4,9 @@ import _root_.java.util.Date
 import _root_.java.util.Locale
 import _root_.java.text.SimpleDateFormat
 
-import _root_.scala.xml.Node
+import _root_.dispatch.json._
+import _root_.sjson.json._
+import _root_.sjson.json.JsonSerialization._
 
 class User(
   val id: Long,
@@ -38,35 +40,49 @@ class User(
 }
 
 object User {
-  def apply(node: Node) : User = {
-    new User(
-      (node \ "id").text.toLong,
-      (node \ "name").text,
-      (node \ "screen_name").text,
-      (node \ "location").text,
-      (node \ "description").text,
-      (node \ "profile_image_url").text,
-      (node \ "url").text,
-      (node \ "protected").text.toBoolean,
-      (node \ "followers_count").text.toInt,
-      (node \ "profile_background_color").text,
-      (node \ "profile_text_color").text,
-      (node \ "profile_link_color").text,
-      (node \ "profile_sidebar_fill_color").text,
-      (node \ "profile_sidebar_border_color").text,
-      (node \ "friends_count").text.toInt,
-      createdAtDateFormat.parse((node \ "created_at").text),
-      (node \ "favourites_count").text.toInt,
-      try { (node \ "utc_offset").text.toInt } catch { case e : NumberFormatException => 0 },
-      (node \ "time_zone").text,
-      (node \ "profile_background_image_url").text,
-      (node \ "profile_background_tile").text.toBoolean,
-      (node \ "geo_enabled").text.toBoolean,
-      (node \ "verified").text.toBoolean,
-      (node \ "statuses_count").text.toInt,
-      (node \ "lang").text,
-      (node \ "contributors_enabled").text.toBoolean
-    )
+
+  private object UserProtocol extends DefaultProtocol {
+
+    implicit object UserReads extends Reads[User] {
+
+      def reads(json: JsValue) = json match {
+        case JsObject(m) => new User(
+          fromjson[Long](m(JsString("id"))),
+          fromjson[String](m(JsString("name"))),
+          fromjson[String](m(JsString("screen_name"))),
+          try { fromjson[String](m(JsString("location"))) } catch { case _ => "" },
+          try { fromjson[String](m(JsString("description"))) } catch { case _ => "" },
+          fromjson[String](m(JsString("profile_image_url"))),
+          try { fromjson[String](m(JsString("url"))) } catch { case _ => "" },
+          fromjson[Boolean](m(JsString("protected"))),
+          fromjson[Int](m(JsString("followers_count"))),
+          fromjson[String](m(JsString("profile_background_color"))),
+          fromjson[String](m(JsString("profile_text_color"))),
+          fromjson[String](m(JsString("profile_link_color"))),
+          fromjson[String](m(JsString("profile_sidebar_fill_color"))),
+          fromjson[String](m(JsString("profile_sidebar_border_color"))),
+          fromjson[Int](m(JsString("friends_count"))),
+          createdAtDateFormat.parse(fromjson[String](m(JsString("created_at")))),
+          fromjson[Int](m(JsString("favourites_count"))),
+          try { fromjson[Int](m(JsString("utc_offset"))) } catch { case _ => 0 },
+          try { fromjson[String](m(JsString("time_zone"))) } catch { case _ => "" },
+          fromjson[String](m(JsString("profile_background_image_url"))),
+          fromjson[Boolean](m(JsString("profile_background_tile"))),
+          fromjson[Boolean](m(JsString("geo_enabled"))),
+          fromjson[Boolean](m(JsString("verified"))),
+          fromjson[Int](m(JsString("statuses_count"))),
+          fromjson[String](m(JsString("lang"))),
+          fromjson[Boolean](m(JsString("contributors_enabled")))
+        )
+        case _ => throw new RuntimeException("User expected")
+      }
+    }
+  }
+
+  import UserProtocol._
+
+  def apply(json: JsValue) : User = {
+    fromjson[User](json)
   }
 
   def createKey(id: Long) = "%016x".format(id)
