@@ -153,104 +153,186 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.hadoop</groupId>
+			<groupId>com.cloudera.hadoop</groupId>
 			<artifactId>hadoop-core</artifactId>
-			<version>0.20.2</version>
+			<version>0.20.2-737</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.mortbay.jetty</groupId>
 					<artifactId>jetty</artifactId>
 				</exclusion>
 				<exclusion>
+					<groupId>org.mortbay.jetty</groupId>
 					<artifactId>jetty-util</artifactId>
-					<groupId>org.mortbay.jetty</groupId>
 				</exclusion>
 				<exclusion>
+					<groupId>org.mortbay.jetty</groupId>
 					<artifactId>servlet-api-2.5</artifactId>
-					<groupId>org.mortbay.jetty</groupId>
 				</exclusion>
 				<exclusion>
+					<groupId>org.mortbay.jetty</groupId>
 					<artifactId>jsp-api-2.1</artifactId>
-					<groupId>org.mortbay.jetty</groupId>
 				</exclusion>
 				<exclusion>
+					<groupId>org.mortbay.jetty</groupId>
 					<artifactId>jsp-2.1</artifactId>
-					<groupId>org.mortbay.jetty</groupId>
 				</exclusion>
 				<exclusion>
+					<groupId>tomcat</groupId>
 					<artifactId>jasper-runtime</artifactId>
-					<groupId>tomcat</groupId>
 				</exclusion>
 				<exclusion>
+					<groupId>tomcat</groupId>
 					<artifactId>jasper-compiler</artifactId>
-					<groupId>tomcat</groupId>
 				</exclusion>
 				<exclusion>
-					<artifactId>commons-el</artifactId>
 					<groupId>commons-el</groupId>
+					<artifactId>commons-el</artifactId>
 				</exclusion>
 				<exclusion>
-					<artifactId>hsqldb</artifactId>
 					<groupId>hsqldb</groupId>
+					<artifactId>hsqldb</artifactId>
 				</exclusion>
 				<exclusion>
-					<artifactId>xmlenc</artifactId>
 					<groupId>xmlenc</groupId>
+					<artifactId>xmlenc</artifactId>
 				</exclusion>
 				<exclusion>
-					<artifactId>kfs</artifactId>
 					<groupId>net.sf.kosmosfs</groupId>
+					<artifactId>kfs</artifactId>
 				</exclusion>
 				<exclusion>
-					<artifactId>jets3t</artifactId>
 					<groupId>net.java.dev.jets3t</groupId>
+					<artifactId>jets3t</artifactId>
 				</exclusion>
 				<exclusion>
-					<artifactId>core</artifactId>
 					<groupId>org.eclipse.jdt</groupId>
+					<artifactId>core</artifactId>
 				</exclusion>
 				<exclusion>
-					<artifactId>oro</artifactId>
 					<groupId>oro</groupId>
+					<artifactId>oro</artifactId>
 				</exclusion>
 				<exclusion>
-					<artifactId>commons-net</artifactId>
 					<groupId>commons-net</groupId>
+					<artifactId>commons-net</artifactId>
 				</exclusion>
 				<exclusion>
-					<artifactId>commons-codec</artifactId>
 					<groupId>commons-codec</groupId>
+					<artifactId>commons-codec</artifactId>
 				</exclusion>
 				<exclusion>
-					<artifactId>commons-logging</artifactId>
 					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.hbase</groupId>
 			<artifactId>hbase</artifactId>
-			<version>0.90.0-candidate-0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.hadoop</groupId>
-			<artifactId>zookeeper</artifactId>
-			<version>3.3.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>r6</version>
+			<version>0.90.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.hadoop</groupId>
+					<artifactId>hadoop-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.hadoop</groupId>
+					<artifactId>avro</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.thrift</groupId>
+					<artifactId>thrift</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mortbay.jetty</groupId>
+					<artifactId>jetty</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mortbay.jetty</groupId>
+					<artifactId>jetty-util</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mortbay.jetty</groupId>
+					<artifactId>servlet-api-2.5</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mortbay.jetty</groupId>
+					<artifactId>jsp-api-2.1</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mortbay.jetty</groupId>
+					<artifactId>jsp-2.1</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>tomcat</groupId>
+					<artifactId>jasper-runtime</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>tomcat</groupId>
+					<artifactId>jasper-compiler</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jersey</groupId>
+					<artifactId>jersey-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jersey</groupId>
+					<artifactId>jersey-server</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.google.protobuf</groupId>
+					<artifactId>protobuf-java</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.xml.bind</groupId>
+					<artifactId>jaxb-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.ws.rs</groupId>
+					<artifactId>jsr311-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>stax</groupId>
+					<artifactId>stax-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>jline</groupId>
+					<artifactId>jline</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.jruby</groupId>
+					<artifactId>jruby-complete</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>commons-httpclient</groupId>
+					<artifactId>commons-httpclient</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
-			<version>2.4</version>
+			<version>2.5</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
 			<version>3.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>net.debasishg</groupId>
@@ -303,6 +385,11 @@
 			<id>scala-tools.org</id>
 			<name>Scala-Tools Maven2 Repository</name>
 			<url>http://scala-tools.org/repo-releases</url>
+		</repository>
+		<repository>
+			<id>repository.cloudera.com</id>
+			<name>Cloudera Releases</name>
+			<url>https://repository.cloudera.com/content/repositories/releases</url>
 		</repository>
 	</repositories>
 
