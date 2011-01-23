@@ -7,7 +7,8 @@ create 'tagtrend',
   { NAME => 'timeline_es', VERSIONS => java.lang.Integer::MAX_VALUE }, { NAME => 'score_es' },
   { NAME => 'timeline_de', VERSIONS => java.lang.Integer::MAX_VALUE }, { NAME => 'score_de' },
   { NAME => 'timeline_fr', VERSIONS => java.lang.Integer::MAX_VALUE }, { NAME => 'score_fr' },
-  { NAME => 'timeline_it', VERSIONS => java.lang.Integer::MAX_VALUE }, { NAME => 'score_it' }
+  { NAME => 'timeline_it', VERSIONS => java.lang.Integer::MAX_VALUE }, { NAME => 'score_it' },
+  { NAME => 'timeline_ko', VERSIONS => java.lang.Integer::MAX_VALUE }, { NAME => 'score_ko' }
 
 create 'languages',
-  { NAME => 'en' }, { NAME => 'ja' }, { NAME => 'es' }, { NAME => 'de' }, { NAME => 'fr' }, { NAME => 'it' }
+  { NAME => 'en' }, { NAME => 'ja' }, { NAME => 'es' }, { NAME => 'de' }, { NAME => 'fr' }, { NAME => 'it' }, { NAME => 'ko' }
