@@ -39,6 +39,10 @@
 		<url>http://hadoop.happy-camper.st/</url>
 	</issueManagement>
 
+	<modules>
+		<module>hbase-twitter-bulkload</module>
+	</modules>
+
 	<properties>
 		<scala.version>2.8.1</scala.version>
 		<hadoop.version>0.20.2-737</hadoop.version>
@@ -101,6 +105,39 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.scala-tools</groupId>
+					<artifactId>maven-scala-plugin</artifactId>
+					<version>2.15.2</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>appassembler-maven-plugin</artifactId>
+					<version>1.1.1</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>assemble</goal>
+							</goals>
+							<phase>package</phase>
+						</execution>
+					</executions>
+					<configuration>
+						<extraJvmArguments>-server</extraJvmArguments>
+						<configurationDirectory>conf</configurationDirectory>
+						<repositoryLayout>flat</repositoryLayout>
+						<repositoryName>lib</repositoryName>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-eclipse-plugin</artifactId>
+					<version>2.8</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 	<profiles>
@@ -133,6 +170,7 @@
 	</profiles>
 
 	<dependencies>
+
 		<dependency>
 			<groupId>com.cloudera.hadoop</groupId>
 			<artifactId>hadoop-core</artifactId>
@@ -348,7 +386,37 @@
 
 	</dependencies>
 
+	<dependencyManagement>
+		<dependencies>
+
+			<dependency>
+				<groupId>org.scala-lang</groupId>
+				<artifactId>scala-library</artifactId>
+				<version>${scala.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.debasishg</groupId>
+				<artifactId>sjson_2.8.1</artifactId>
+				<version>0.8</version>
+			</dependency>
+			<dependency>
+				<groupId>net.databinder</groupId>
+				<artifactId>dispatch-json_2.8.1</artifactId>
+				<version>0.7.8</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.scala-tools.testing</groupId>
+				<artifactId>specs_2.8.1</artifactId>
+				<version>1.6.7.2</version>
+				<scope>test</scope>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
+
 	<repositories>
+
 		<repository>
 			<id>maven.hadoop.happy-camper.st</id>
 			<name>hadoop : Happy-Camper Street Maven2 Repository</name>
@@ -370,7 +438,22 @@
 			<name>Cloudera Releases</name>
 			<url>https://repository.cloudera.com/content/repositories/releases</url>
 		</repository>
+
+		<repository>
+			<id>scala-tools.org</id>
+			<name>Scala-Tools Maven2 Repository</name>
+			<url>http://scala-tools.org/repo-releases</url>
+		</repository>
+
 	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>scala-tools.org</id>
+			<name>Scala-Tools Maven2 Repository</name>
+			<url>http://scala-tools.org/repo-releases</url>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<distributionManagement>
 		<repository>
