@@ -1,5 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>st.happy_camper.hadoop</groupId>
+		<artifactId>hadoop-client</artifactId>
+		<version>CDH3B4-1-SNAPSHOT</version>
+	</parent>
+
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>st.happy_camper.hbase</groupId>
 	<artifactId>hbase-twitter</artifactId>
@@ -45,8 +52,7 @@
 
 	<properties>
 		<scala.version>2.8.1</scala.version>
-		<hadoop.version>0.20.2-737</hadoop.version>
-		<hbase.version>0.90.1</hbase.version>
+		<hbase.version>0.90.1-CDH3B4</hbase.version>
 	</properties>
 
 	<build>
@@ -103,6 +109,11 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.1</version>
 			</plugin>
 		</plugins>
 		<pluginManagement>
@@ -172,171 +183,8 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>com.cloudera.hadoop</groupId>
-			<artifactId>hadoop-core</artifactId>
-			<version>${hadoop.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.mortbay.jetty</groupId>
-					<artifactId>jetty</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.mortbay.jetty</groupId>
-					<artifactId>jetty-util</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.mortbay.jetty</groupId>
-					<artifactId>servlet-api-2.5</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.mortbay.jetty</groupId>
-					<artifactId>jsp-api-2.1</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.mortbay.jetty</groupId>
-					<artifactId>jsp-2.1</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>tomcat</groupId>
-					<artifactId>jasper-runtime</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>tomcat</groupId>
-					<artifactId>jasper-compiler</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-el</groupId>
-					<artifactId>commons-el</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>hsqldb</groupId>
-					<artifactId>hsqldb</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>xmlenc</groupId>
-					<artifactId>xmlenc</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>net.sf.kosmosfs</groupId>
-					<artifactId>kfs</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>net.java.dev.jets3t</groupId>
-					<artifactId>jets3t</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.jdt</groupId>
-					<artifactId>core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>oro</groupId>
-					<artifactId>oro</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-net</groupId>
-					<artifactId>commons-net</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-codec</groupId>
-					<artifactId>commons-codec</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
 			<groupId>org.apache.hbase</groupId>
 			<artifactId>hbase</artifactId>
-			<version>${hbase.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.hadoop</groupId>
-					<artifactId>hadoop-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.hadoop</groupId>
-					<artifactId>avro</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.thrift</groupId>
-					<artifactId>thrift</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.mortbay.jetty</groupId>
-					<artifactId>jetty</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.mortbay.jetty</groupId>
-					<artifactId>jetty-util</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.mortbay.jetty</groupId>
-					<artifactId>servlet-api-2.5</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.mortbay.jetty</groupId>
-					<artifactId>jsp-api-2.1</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.mortbay.jetty</groupId>
-					<artifactId>jsp-2.1</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>tomcat</groupId>
-					<artifactId>jasper-runtime</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>tomcat</groupId>
-					<artifactId>jasper-compiler</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.sun.jersey</groupId>
-					<artifactId>jersey-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.sun.jersey</groupId>
-					<artifactId>jersey-server</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.google.protobuf</groupId>
-					<artifactId>protobuf-java</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>javax.xml.bind</groupId>
-					<artifactId>jaxb-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>javax.ws.rs</groupId>
-					<artifactId>jsr311-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>stax</groupId>
-					<artifactId>stax-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>jline</groupId>
-					<artifactId>jline</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.jruby</groupId>
-					<artifactId>jruby-complete</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-httpclient</groupId>
-					<artifactId>commons-httpclient</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>junit</groupId>
-					<artifactId>junit</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -418,6 +266,12 @@
 	<repositories>
 
 		<repository>
+			<id>hadoop-client-releases</id>
+			<name>hadoop-client releases</name>
+			<url>http://ueshin.github.com/hadoop-client/releases</url>
+		</repository>
+
+		<repository>
 			<id>maven.hadoop.happy-camper.st</id>
 			<name>hadoop : Happy-Camper Street Maven2 Repository</name>
 			<url>http://hadoop.happy-camper.st/maven2/</url>
@@ -433,6 +287,7 @@
 				<enabled>false</enabled>
 			</releases>
 		</repository>
+
 		<repository>
 			<id>repository.cloudera.com</id>
 			<name>Cloudera Releases</name>
