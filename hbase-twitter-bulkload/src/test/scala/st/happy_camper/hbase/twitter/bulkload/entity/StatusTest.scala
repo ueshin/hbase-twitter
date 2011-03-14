@@ -3,8 +3,6 @@ package st.happy_camper.hbase.twitter.bulkload.entity
 import _root_.org.specs._
 import _root_.org.specs.runner.{ ConsoleRunner, JUnit4 }
 
-import _root_.dispatch.json._
-
 class StatusTest extends JUnit4(StatusSpec)
 
 object StatusSpecRunner extends ConsoleRunner(StatusSpec)
@@ -25,6 +23,8 @@ object StatusSpec extends Specification {
       status.inReplyToUserId     mustEqual None
       status.favorited           mustEqual false
       status.inReplyToScreenName mustEqual None
+      status.retweeted           mustEqual false
+      status.retweetCount.get    mustEqual 98L
 
       status.place match {
         case Some(place) => {
@@ -66,10 +66,10 @@ object StatusSpec extends Specification {
       user.id                        mustEqual 635543
       user.name                      mustEqual "Daniel Burka"
       user.screenName                mustEqual "dburka"
-      user.location                  mustEqual "San Francisco"
-      user.description               mustEqual "Director of design at Tiny Speck. Ex-Creative director at Digg. CSS. Design. UX. Climbing. Cycling. Chilaquiles mmm."
+      user.location.get              mustEqual "San Francisco"
+      user.description.get           mustEqual "Director of design at Tiny Speck. Ex-Creative director at Digg. CSS. Design. UX. Climbing. Cycling. Chilaquiles mmm."
       user.profileImageUrl           mustEqual "http://a3.twimg.com/profile_images/74260755/2009-square-small_normal.jpg"
-      user.url                       mustEqual "http://deltatangobravo.com"
+      user.url.get                   mustEqual "http://deltatangobravo.com"
       user.isProtected               mustEqual false
       user.followersCount            mustEqual 9950
       user.profileBackgroundColor    mustEqual "BADFCD"
@@ -80,22 +80,22 @@ object StatusSpec extends Specification {
       user.friendsCount              mustEqual 219
       user.createdAt                 mustEqual User.createdAtDateFormat.parse("Mon Jan 15 15:22:14 +0000 2007")
       user.favouritesCount           mustEqual 92
-      user.utcOffset                 mustEqual -28800
-      user.timeZone                  mustEqual "Pacific Time (US & Canada)"
+      user.utcOffset.get             mustEqual -28800
+      user.timeZone.get              mustEqual "Pacific Time (US & Canada)"
       user.profileBackgroundImageUrl mustEqual "http://a3.twimg.com/profile_background_images/4444585/back.png"
       user.profileBackgroundTile     mustEqual true
       user.profileUseBackgroundImage mustEqual true
-      user.notifications             mustEqual false
+      user.notifications.get         mustEqual false
       user.geoEnabled                mustEqual true
       user.verified                  mustEqual false
       user.statusesCount             mustEqual 806
       user.lang                      mustEqual "en"
       user.contributorsEnabled       mustEqual false
-      user.followRequestSent         mustEqual false
+      user.followRequestSent.get     mustEqual false
     }
   }
 
-  val json = Js("""{
+  val json = """{
     "coordinates": null,
     "favorited": false,
     "created_at": "Fri Jul 16 16:55:52 +0000 2010",
@@ -201,6 +201,8 @@ object StatusSpec extends Specification {
       "screen_name": "dburka"
     },
     "source": "web",
-    "in_reply_to_status_id": null
-  }""")
+    "in_reply_to_status_id": null,
+    "retweeted": false,
+    "retweet_count": 98
+  }"""
 }

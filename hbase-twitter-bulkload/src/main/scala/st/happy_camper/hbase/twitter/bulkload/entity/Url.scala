@@ -1,8 +1,7 @@
 package st.happy_camper.hbase.twitter.bulkload.entity
 
-import _root_.dispatch.json._
-import _root_.sjson.json._
-import _root_.sjson.json.JsonSerialization._
+import _root_.org.codehaus.jackson.JsonNode
+import _root_.org.codehaus.jackson.map.ObjectMapper
 
 class Url(
   val url: String,
@@ -12,27 +11,18 @@ class Url(
 
 object Url {
 
-  private object UrlProtocol extends DefaultProtocol {
-
-    implicit object UrlReads extends Reads[Url] {
-      def reads(json: JsValue) = json match {
-        case JsObject(m) => new Url(
-          fromjson[String](m(JsString("url"))),
-          try { Option(fromjson[String](m(JsString("expanded_url")))) } catch { case _ => None },
-          m(JsString("indices")).toString
-        )
-        case _ => throw new RuntimeException("Url expected")
-      }
+  def apply(json: String) : Url = {
+    Option(new ObjectMapper().readTree(json)) match {
+      case Some(root) => new Url(
+        root.path("url").getTextValue,
+        Option(root.path("expanded_url").getTextValue),
+        root.path("indices").toString
+      )
+      case _ => throw new RuntimeException("Url expected.")
     }
   }
 
-  import UrlProtocol._
-
-  def apply(json: JsValue) : Url = {
-    fromjson[Url](json)
-  }
-
-  def unapply(json: JsValue) : Option[Url] = {
+  def unapply(json: String) : Option[Url] = {
     try {
       Some(Url(json))
     }

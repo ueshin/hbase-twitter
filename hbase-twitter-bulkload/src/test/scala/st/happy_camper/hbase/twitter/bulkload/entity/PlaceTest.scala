@@ -3,8 +3,6 @@ package st.happy_camper.hbase.twitter.bulkload.entity
 import _root_.org.specs._
 import _root_.org.specs.runner.{ ConsoleRunner, JUnit4 }
 
-import _root_.dispatch.json._
-
 class PlaceTest extends JUnit4(PlaceSpec)
 
 object PlaceSpecRunner extends ConsoleRunner(PlaceSpec)
@@ -28,7 +26,7 @@ object PlaceSpec extends Specification {
     }
   }
 
-  val json = Js("""{
+  val json = """{
       "name": "San Francisco",
       "country_code": "US",
       "country": "The United States of America",
@@ -62,5 +60,5 @@ object PlaceSpec extends Specification {
       },
       "full_name": "San Francisco, CA",
       "place_type": "city"
-    }""")
+    }"""
 }

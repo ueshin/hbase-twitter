@@ -4,9 +4,8 @@ import _root_.java.util.Date
 import _root_.java.util.Locale
 import _root_.java.text.SimpleDateFormat
 
-import _root_.dispatch.json._
-import _root_.sjson.json._
-import _root_.sjson.json.JsonSerialization._
+import _root_.org.codehaus.jackson.JsonNode
+import _root_.org.codehaus.jackson.map.ObjectMapper
 
 class Status(
   val createdAt: Date,
@@ -18,6 +17,8 @@ class Status(
   val inReplyToUserId: Option[Long],
   val favorited: Boolean,
   val inReplyToScreenName: Option[String],
+  val retweeted: Boolean,
+  val retweetCount: Option[Long],
   val place: Option[Place],
   val userMentions: List[UserMention],
   val urls: List[Url],
@@ -26,7 +27,7 @@ class Status(
 )
 
 object Status {
-
+/*
   private object StatusProtocol extends DefaultProtocol {
 
     implicit object StatusReads extends Reads[Status] {
@@ -41,6 +42,8 @@ object Status {
           try { Option(fromjson[Long](m(JsString("in_reply_to_user_id")))) } catch { case _ => None },
           fromjson[Boolean](m(JsString("favorited"))),
           try { Option(fromjson[String](m(JsString("in_reply_to_screen_name")))) } catch { case _ => None },
+          fromjson[Boolean](m(JsString("retweeted"))),
+          try { Option(fromjson[Long](m(JsString("retweet_count")))) } catch { case _ => None },
           try { Option(Place(m(JsString("place")))) } catch { case _ => None },
           m(JsString("entities")) match {
             case JsObject(m) => {
@@ -77,14 +80,14 @@ object Status {
   }
 
   import StatusProtocol._
-
-  def apply(json: JsValue) : Status = {
-    fromjson[Status](json)
+*/
+  def apply(json: String) : Status = {
+    null
   }
 
-  def unapply(json: JsValue) : Option[Status] = {
+  def unapply(json: String) : Option[Status] = {
     try {
-      Some(Status(json))
+      Option(Status(json))
     }
     catch {
       case _ => None

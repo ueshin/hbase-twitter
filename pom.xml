@@ -242,15 +242,16 @@
 				<artifactId>scala-library</artifactId>
 				<version>${scala.version}</version>
 			</dependency>
+
 			<dependency>
-				<groupId>net.debasishg</groupId>
-				<artifactId>sjson_2.8.1</artifactId>
-				<version>0.8</version>
+				<groupId>org.codehaus.jackson</groupId>
+				<artifactId>jackson-core-asl</artifactId>
+				<version>1.5.8</version>
 			</dependency>
 			<dependency>
-				<groupId>net.databinder</groupId>
-				<artifactId>dispatch-json_2.8.1</artifactId>
-				<version>0.7.8</version>
+				<groupId>org.codehaus.jackson</groupId>
+				<artifactId>jackson-mapper-asl</artifactId>
+				<version>1.5.8</version>
 			</dependency>
 
 			<dependency>

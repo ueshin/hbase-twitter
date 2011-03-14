@@ -1,8 +1,7 @@
 package st.happy_camper.hbase.twitter.bulkload.entity
 
-import _root_.dispatch.json._
-import _root_.sjson.json._
-import _root_.sjson.json.JsonSerialization._
+import _root_.org.codehaus.jackson.JsonNode
+import _root_.org.codehaus.jackson.map.ObjectMapper
 
 class FlumeEvent(
   val body: String,
@@ -15,37 +14,23 @@ class FlumeEvent(
 
 object FlumeEvent {
 
-  private object FlumeEventProtocol extends DefaultProtocol {
-
-    implicit object FlumeEventReads extends Reads[FlumeEvent] {
-      def reads(json: JsValue) = json match {
-        case JsObject(m) => new FlumeEvent(
-          fromjson[String](m(JsString("body"))),
-          fromjson[Long](m(JsString("timestamp"))),
-          fromjson[String](m(JsString("pri"))),
-          fromjson[Long](m(JsString("nanos"))),
-          fromjson[String](m(JsString("host"))),
-          m(JsString("fields")) match {
-            case JsObject(m) => {
-              m.foldLeft(Map.empty[String, String]) { case (m, (k, v)) => m + (fromjson[String](k) -> fromjson[String](v)) }
-            }
-            case _ => throw new RuntimeException("FlumeEvent expected")
-          }
-        )
-        case _ => throw new RuntimeException("FlumeEvent expected")
-      }
+  def apply(json: String) : FlumeEvent = {
+    Option(new ObjectMapper().readTree(json)) match {
+      case Some(root) => new FlumeEvent(
+        root.path("body").getTextValue,
+        root.path("timestamp").getLongValue,
+        root.path("pri").getTextValue,
+        root.path("nanos").getBigIntegerValue.longValue,
+        root.path("host").getTextValue,
+        Map.empty[String, String]
+      )
+      case _ => throw new RuntimeException("FlumeEvent expected.")
     }
   }
 
-  import FlumeEventProtocol._
-
-  def apply(json: JsValue) : FlumeEvent = {
-    fromjson[FlumeEvent](json)
-  }
-
-  def unapply(json: JsValue) : Option[FlumeEvent] = {
+  def unapply(json: String) : Option[FlumeEvent] = {
     try {
-      Some(FlumeEvent(json))
+      Option(FlumeEvent(json))
     }
     catch {
       case _ => None

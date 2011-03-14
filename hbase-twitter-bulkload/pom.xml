@@ -66,13 +66,14 @@
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-library</artifactId>
 		</dependency>
+
 		<dependency>
-			<groupId>net.debasishg</groupId>
-			<artifactId>sjson_2.8.1</artifactId>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-asl</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>net.databinder</groupId>
-			<artifactId>dispatch-json_2.8.1</artifactId>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
 		</dependency>
 
 		<dependency>

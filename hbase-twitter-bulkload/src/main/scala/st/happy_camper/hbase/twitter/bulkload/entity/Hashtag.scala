@@ -1,8 +1,7 @@
 package st.happy_camper.hbase.twitter.bulkload.entity
 
-import _root_.dispatch.json._
-import _root_.sjson.json._
-import _root_.sjson.json.JsonSerialization._
+import _root_.org.codehaus.jackson.JsonNode
+import _root_.org.codehaus.jackson.map.ObjectMapper
 
 class Hashtag(
   val text: String,
@@ -11,28 +10,19 @@ class Hashtag(
 
 object Hashtag {
 
-  private object HashtagProtocol extends DefaultProtocol {
-
-    implicit object HashtagReads extends Reads[Hashtag] {
-      def reads(json: JsValue) = json match {
-        case JsObject(m) => new Hashtag(
-          fromjson[String](m(JsString("text"))),
-          m(JsString("indices")).toString
-        )
-        case _ => throw new RuntimeException("Hashtag expected")
-      }
+  def apply(json: String) : Hashtag = {
+    Option(new ObjectMapper().readTree(json)) match {
+      case Some(root) => new Hashtag(
+        root.path("text").getTextValue,
+        root.path("indices").toString
+      )
+      case _ => throw new RuntimeException("Hashtag expected.")
     }
   }
 
-  import HashtagProtocol._
-
-  def apply(json: JsValue) : Hashtag = {
-    fromjson[Hashtag](json)
-  }
-
-  def unapply(json: JsValue) : Option[Hashtag] = {
+  def unapply(json: String) : Option[Hashtag] = {
     try {
-      Some(fromjson[Hashtag](json))
+      Option(Hashtag(json))
     }
     catch {
       case _ => None
