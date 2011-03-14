@@ -3,6 +3,8 @@ package st.happy_camper.hbase.twitter.bulkload.entity
 import _root_.org.specs._
 import _root_.org.specs.runner.{ ConsoleRunner, JUnit4 }
 
+import _root_.org.codehaus.jackson.map.ObjectMapper
+
 class StatusTest extends JUnit4(StatusSpec)
 
 object StatusSpecRunner extends ConsoleRunner(StatusSpec)
@@ -12,7 +14,7 @@ object StatusSpec extends Specification {
   "Status" should {
 
     "apply JSON" in {
-      val status = Status(json)
+      val status = Status(new ObjectMapper().readTree(json))
 
       status.createdAt           mustEqual Status.createdAtDateFormat.parse("Fri Jul 16 16:55:52 +0000 2010")
       status.id                  mustEqual 18700688341L
@@ -33,7 +35,7 @@ object StatusSpec extends Specification {
           place.fullName        mustEqual "San Francisco, CA"
           place.placeType       mustEqual "city"
           place.url             mustEqual "http://api.twitter.com/1/geo/id/5a110d312052166f.json"
-          place.boundingBox     mustEqual "[[[-122.51368188, 37.70813196], [-122.35845384, 37.70813196], [-122.35845384, 37.83245301], [-122.51368188, 37.83245301]]]"
+          place.boundingBox     mustEqual "[[[-122.51368188,37.70813196],[-122.35845384,37.70813196],[-122.35845384,37.83245301],[-122.51368188,37.83245301]]]"
           place.boundingBoxType mustEqual "Polygon"
           place.country         mustEqual "The United States of America"
           place.countryCode     mustEqual "US"
@@ -46,7 +48,7 @@ object StatusSpec extends Specification {
           userMention.id         mustEqual 6104L
           userMention.screenName mustEqual "iamcal"
           userMention.name       mustEqual "Cal Henderson"
-          userMention.indices    mustEqual "[108, 115]"
+          userMention.indices    mustEqual "[108,115]"
         }
         case _ => fail
       }
@@ -55,7 +57,7 @@ object StatusSpec extends Specification {
         case List(url) => {
           url.url         mustEqual "http://bit.ly/libraryman"
           url.expandedUrl mustEqual None
-          url.indices     mustEqual "[78, 102]"
+          url.indices     mustEqual "[78,102]"
         }
         case _ => fail
       }

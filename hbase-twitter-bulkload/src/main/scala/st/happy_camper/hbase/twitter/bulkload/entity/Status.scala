@@ -1,5 +1,7 @@
 package st.happy_camper.hbase.twitter.bulkload.entity
 
+import _root_.scala.collection.JavaConversions._
+
 import _root_.java.util.Date
 import _root_.java.util.Locale
 import _root_.java.text.SimpleDateFormat
@@ -27,65 +29,29 @@ class Status(
 )
 
 object Status {
-/*
-  private object StatusProtocol extends DefaultProtocol {
 
-    implicit object StatusReads extends Reads[Status] {
-      def reads(json: JsValue) = json match {
-        case JsObject(m) => new Status(
-          createdAtDateFormat.parse(fromjson[String](m(JsString("created_at")))),
-          fromjson[Long](m(JsString("id"))),
-          fromjson[String](m(JsString("text"))),
-          fromjson[String](m(JsString("source"))),
-          fromjson[Boolean](m(JsString("truncated"))),
-          try { Option(fromjson[Long](m(JsString("in_reply_to_status_id")))) } catch { case _ => None },
-          try { Option(fromjson[Long](m(JsString("in_reply_to_user_id")))) } catch { case _ => None },
-          fromjson[Boolean](m(JsString("favorited"))),
-          try { Option(fromjson[String](m(JsString("in_reply_to_screen_name")))) } catch { case _ => None },
-          fromjson[Boolean](m(JsString("retweeted"))),
-          try { Option(fromjson[Long](m(JsString("retweet_count")))) } catch { case _ => None },
-          try { Option(Place(m(JsString("place")))) } catch { case _ => None },
-          m(JsString("entities")) match {
-            case JsObject(m) => {
-              m(JsString("user_mentions")) match {
-                case JsArray(ts) => ts.map(t => UserMention(t))
-                case _ => throw new RuntimeException("Status expected")
-              }
-            }
-            case _ => throw new RuntimeException("Status expected")
-          },
-          m(JsString("entities")) match {
-            case JsObject(m) => {
-              m(JsString("urls")) match {
-                case JsArray(ts) => ts.map(t => Url(t))
-                case _ => throw new RuntimeException("Status expected")
-              }
-            }
-            case _ => throw new RuntimeException("Status expected")
-          },
-          m(JsString("entities")) match {
-            case JsObject(m) => {
-              m(JsString("hashtags")) match {
-                case JsArray(ts) => ts.map(t => Hashtag(t))
-                case _ => throw new RuntimeException("Status expected")
-              }
-            }
-            case _ => throw new RuntimeException("Status expected")
-          },
-          User(m(JsString("user")))
-        )
-        case _ => throw new RuntimeException("Status expected")
-      }
-    }
+  def apply(json: JsonNode) : Status = {
+    new Status(
+      createdAtDateFormat.parse(json.path("created_at").getTextValue),
+      json.path("id").getLongValue,
+      json.path("text").getTextValue,
+      json.path("source").getTextValue,
+      json.path("truncated").getBooleanValue,
+      Option(json.path("in_reply_to_status_id").getLongValue).filter(_!=0L),
+      Option(json.path("in_reply_to_user_id").getLongValue).filter(_!=0L),
+      json.path("favorited").getBooleanValue,
+      Option(json.path("in_reply_to_screen_name").getTextValue),
+      json.path("retweeted").getBooleanValue,
+      if(json.path("retweet_count").isNumber) Option(json.path("retweet_count").getLongValue) else None,
+      Option(Place(json.path("place"))),
+      json.path("entities").path("user_mentions").map(UserMention(_)).toList,
+      json.path("entities").path("urls").map(Url(_)).toList,
+      json.path("eitnties").path("hashtags").map(Hashtag(_)).toList,
+      User(json.path("user"))
+    )
   }
 
-  import StatusProtocol._
-*/
-  def apply(json: String) : Status = {
-    null
-  }
-
-  def unapply(json: String) : Option[Status] = {
+  def unapply(json: JsonNode) : Option[Status] = {
     try {
       Option(Status(json))
     }

@@ -1,7 +1,8 @@
 package st.happy_camper.hbase.twitter.bulkload.entity
 
+import _root_.scala.collection.JavaConversions._
+
 import _root_.org.codehaus.jackson.JsonNode
-import _root_.org.codehaus.jackson.map.ObjectMapper
 
 class FlumeEvent(
   val body: String,
@@ -14,21 +15,22 @@ class FlumeEvent(
 
 object FlumeEvent {
 
-  def apply(json: String) : FlumeEvent = {
-    Option(new ObjectMapper().readTree(json)) match {
-      case Some(root) => new FlumeEvent(
-        root.path("body").getTextValue,
-        root.path("timestamp").getLongValue,
-        root.path("pri").getTextValue,
-        root.path("nanos").getBigIntegerValue.longValue,
-        root.path("host").getTextValue,
-        Map.empty[String, String]
-      )
-      case _ => throw new RuntimeException("FlumeEvent expected.")
-    }
+  def apply(json: JsonNode) : FlumeEvent = {
+    new FlumeEvent(
+      json.path("body").getTextValue,
+      json.path("timestamp").getLongValue,
+      json.path("pri").getTextValue,
+      json.path("nanos").getLongValue,
+      json.path("host").getTextValue,
+      json.path("fields").getFieldNames.map {
+        fieldName => {
+          (fieldName -> json.path("fields").path(fieldName).getTextValue)
+        }
+      }.toMap
+    )
   }
 
-  def unapply(json: String) : Option[FlumeEvent] = {
+  def unapply(json: JsonNode) : Option[FlumeEvent] = {
     try {
       Option(FlumeEvent(json))
     }

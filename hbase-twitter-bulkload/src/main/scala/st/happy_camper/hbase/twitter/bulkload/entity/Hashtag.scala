@@ -1,7 +1,6 @@
 package st.happy_camper.hbase.twitter.bulkload.entity
 
 import _root_.org.codehaus.jackson.JsonNode
-import _root_.org.codehaus.jackson.map.ObjectMapper
 
 class Hashtag(
   val text: String,
@@ -10,17 +9,14 @@ class Hashtag(
 
 object Hashtag {
 
-  def apply(json: String) : Hashtag = {
-    Option(new ObjectMapper().readTree(json)) match {
-      case Some(root) => new Hashtag(
-        root.path("text").getTextValue,
-        root.path("indices").toString
-      )
-      case _ => throw new RuntimeException("Hashtag expected.")
-    }
+  def apply(json: JsonNode) : Hashtag = {
+    new Hashtag(
+      json.path("text").getTextValue,
+      json.path("indices").toString
+    )
   }
 
-  def unapply(json: String) : Option[Hashtag] = {
+  def unapply(json: JsonNode) : Option[Hashtag] = {
     try {
       Option(Hashtag(json))
     }

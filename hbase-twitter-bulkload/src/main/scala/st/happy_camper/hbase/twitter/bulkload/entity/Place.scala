@@ -1,7 +1,6 @@
 package st.happy_camper.hbase.twitter.bulkload.entity
 
 import _root_.org.codehaus.jackson.JsonNode
-import _root_.org.codehaus.jackson.map.ObjectMapper
 
 class Place(
   val id: String,
@@ -17,11 +16,21 @@ class Place(
 
 object Place {
 
-  def apply(json: String) : Place = {
-    null
+  def apply(json: JsonNode) : Place = {
+    new Place(
+      json.path("id").getTextValue,
+      json.path("name").getTextValue,
+      json.path("full_name").getTextValue,
+      json.path("place_type").getTextValue,
+      json.path("url").getTextValue,
+      json.path("bounding_box").path("coordinates").toString,
+      json.path("bounding_box").path("type").getTextValue,
+      json.path("country").getTextValue,
+      json.path("country_code").getTextValue
+    )
   }
 
-  def unapply(json: String) : Option[Place] = {
+  def unapply(json: JsonNode) : Option[Place] = {
     try {
       Option(Place(json))
     }

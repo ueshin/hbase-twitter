@@ -5,7 +5,6 @@ import _root_.java.util.Locale
 import _root_.java.text.SimpleDateFormat
 
 import _root_.org.codehaus.jackson.JsonNode
-import _root_.org.codehaus.jackson.map.ObjectMapper
 
 class User(
   val id: Long,
@@ -43,56 +42,43 @@ class User(
 }
 
 object User {
-/*
-  private object UserProtocol extends DefaultProtocol {
 
-    implicit object UserReads extends Reads[User] {
-
-      def reads(json: JsValue) = json match {
-        case JsObject(m) => new User(
-          fromjson[Long](m(JsString("id"))),
-          fromjson[String](m(JsString("name"))),
-          fromjson[String](m(JsString("screen_name"))),
-          try { Option(fromjson[String](m(JsString("location")))) } catch { case _ => None },
-          try { Option(fromjson[String](m(JsString("description")))) } catch { case _ => None },
-          fromjson[String](m(JsString("profile_image_url"))),
-          try { Option(fromjson[String](m(JsString("url")))) } catch { case _ => None },
-          fromjson[Boolean](m(JsString("protected"))),
-          fromjson[Int](m(JsString("followers_count"))),
-          fromjson[String](m(JsString("profile_background_color"))),
-          fromjson[String](m(JsString("profile_text_color"))),
-          fromjson[String](m(JsString("profile_link_color"))),
-          fromjson[String](m(JsString("profile_sidebar_fill_color"))),
-          fromjson[String](m(JsString("profile_sidebar_border_color"))),
-          fromjson[Int](m(JsString("friends_count"))),
-          createdAtDateFormat.parse(fromjson[String](m(JsString("created_at")))),
-          fromjson[Int](m(JsString("favourites_count"))),
-          try { Option(fromjson[Int](m(JsString("utc_offset")))) } catch { case _ => None },
-          try { Option(fromjson[String](m(JsString("time_zone")))) } catch { case _ => None },
-          fromjson[String](m(JsString("profile_background_image_url"))),
-          fromjson[Boolean](m(JsString("profile_background_tile"))),
-          fromjson[Boolean](m(JsString("profile_use_background_image"))),
-          try { Option(fromjson[Boolean](m(JsString("notifications")))) } catch { case _ => None },
-          fromjson[Boolean](m(JsString("geo_enabled"))),
-          fromjson[Boolean](m(JsString("verified"))),
-          try { Option(fromjson[Boolean](m(JsString("following")))) } catch { case _ => None },
-          fromjson[Int](m(JsString("statuses_count"))),
-          fromjson[String](m(JsString("lang"))),
-          fromjson[Boolean](m(JsString("contributors_enabled"))),
-          try { Option(fromjson[Boolean](m(JsString("follow_request_sent")))) } catch { case _ => None }
-        )
-        case _ => throw new RuntimeException("User expected")
-      }
-    }
+  def apply(json: JsonNode) : User = {
+    new User(
+      json.path("id").getLongValue,
+      json.path("name").getTextValue,
+      json.path("screen_name").getTextValue,
+      Option(json.path("location").getTextValue),
+      Option(json.path("description").getTextValue),
+      json.path("profile_image_url").getTextValue,
+      Option(json.path("url").getTextValue),
+      json.path("protected").getBooleanValue,
+      json.path("followers_count").getIntValue,
+      json.path("profile_background_color").getTextValue,
+      json.path("profile_text_color").getTextValue,
+      json.path("profile_link_color").getTextValue,
+      json.path("profile_sidebar_fill_color").getTextValue,
+      json.path("profile_sidebar_border_color").getTextValue,
+      json.path("friends_count").getIntValue,
+      createdAtDateFormat.parse(json.path("created_at").getTextValue),
+      json.path("favourites_count").getIntValue,
+      if(json.path("utc_offset").isNumber) Option(json.path("utc_offset").getIntValue) else None,
+      Option(json.path("time_zone").getTextValue),
+      json.path("profile_background_image_url").getTextValue,
+      json.path("profile_background_tile").getBooleanValue,
+      json.path("profile_use_background_image").getBooleanValue,
+      if(json.path("notifications").isBoolean) Option(json.path("notifications").getBooleanValue) else None,
+      json.path("geo_enabled").getBooleanValue,
+      json.path("verified").getBooleanValue,
+      if(json.path("following").isBoolean) Option(json.path("following").getBooleanValue) else None,
+      json.path("statuses_count").getIntValue,
+      json.path("lang").getTextValue,
+      json.path("contributors_enabled").getBooleanValue,
+      if(json.path("follow_request_sent").isBoolean) Option(json.path("follow_request_sent").getBooleanValue) else None
+    )
   }
 
-  import UserProtocol._
-*/
-  def apply(json: String) : User = {
-    null
-  }
-
-  def unapplly(json: String) : Option[User] = {
+  def unapplly(json: JsonNode) : Option[User] = {
     try {
       Option(User(json))
     }

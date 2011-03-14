@@ -3,6 +3,8 @@ package st.happy_camper.hbase.twitter.bulkload.entity
 import _root_.org.specs._
 import _root_.org.specs.runner.{ ConsoleRunner, JUnit4 }
 
+import _root_.org.codehaus.jackson.map.ObjectMapper
+
 class FlumeEventTest extends JUnit4(FlumeEventSpec)
 
 object FlumeEventSpecRunner extends ConsoleRunner(FlumeEventSpec)
@@ -12,7 +14,7 @@ object FlumeEventSpec extends Specification {
   "FlumeEvent" should {
 
     "apply JSON" in {
-      val flumeEvent = FlumeEvent(json)
+      val flumeEvent = FlumeEvent(new ObjectMapper().readTree(json))
 
       flumeEvent.body      mustEqual "event body"
       flumeEvent.timestamp mustEqual 1299160307737L

@@ -3,6 +3,8 @@ package st.happy_camper.hbase.twitter.bulkload.entity
 import _root_.org.specs._
 import _root_.org.specs.runner.{ ConsoleRunner, JUnit4 }
 
+import _root_.org.codehaus.jackson.map.ObjectMapper
+
 class UserTest extends JUnit4(UserSpec)
 
 object UserSpecRunner extends ConsoleRunner(UserSpec)
@@ -11,41 +13,41 @@ object UserSpec extends Specification {
 
   "User" should {
     "apply JSON" in {
-      val user3404 = User(json3404)
+      val user = User(new ObjectMapper().readTree(json))
 
-      user3404.id                        mustEqual 3404
-      user3404.name                      mustEqual "Kevin Lawver"
-      user3404.screenName                mustEqual "kplawver"
-      user3404.location.get              mustEqual "Savannah, GA, US"
-      user3404.description.get           mustEqual "Nerd who loves web standards, Ruby on Rails and all things webbish. Chief Architect @ http://uplaya.com and co-founder of http://ficly.com. Happy dad & husband."
-      user3404.profileImageUrl           mustEqual "http://a3.twimg.com/profile_images/980477983/oh_lawver_normal.jpg"
-      user3404.url.get                   mustEqual "http://lawver.net"
-      user3404.isProtected               mustEqual false
-      user3404.followersCount            mustEqual 1049
-      user3404.profileBackgroundColor    mustEqual "003030"
-      user3404.profileTextColor          mustEqual "003030"
-      user3404.profileLinkColor          mustEqual "DC4104"
-      user3404.profileSidebarFillColor   mustEqual "E6E2B0"
-      user3404.profileSidebarBorderColor mustEqual "A8A37E"
-      user3404.friendsCount              mustEqual 268
-      user3404.createdAt                 mustEqual User.createdAtDateFormat.parse("Sat Jul 29 18:23:37 +0000 2006")
-      user3404.favouritesCount           mustEqual 148
-      user3404.utcOffset.get             mustEqual -18000
-      user3404.timeZone.get              mustEqual "Eastern Time (US & Canada)"
-      user3404.profileBackgroundImageUrl mustEqual "http://a1.twimg.com/profile_background_images/1391712/twitter_back.png"
-      user3404.profileBackgroundTile     mustEqual true
-      user3404.profileUseBackgroundImage mustEqual true
-      user3404.notifications.get         mustEqual false
-      user3404.geoEnabled                mustEqual true
-      user3404.verified                  mustEqual false
-      user3404.statusesCount             mustEqual 10561
-      user3404.lang                      mustEqual "en"
-      user3404.contributorsEnabled       mustEqual false
-      user3404.followRequestSent.get     mustEqual false
+      user.id                        mustEqual 3404
+      user.name                      mustEqual "Kevin Lawver"
+      user.screenName                mustEqual "kplawver"
+      user.location.get              mustEqual "Savannah, GA, US"
+      user.description.get           mustEqual "Nerd who loves web standards, Ruby on Rails and all things webbish. Chief Architect @ http://uplaya.com and co-founder of http://ficly.com. Happy dad & husband."
+      user.profileImageUrl           mustEqual "http://a3.twimg.com/profile_images/980477983/oh_lawver_normal.jpg"
+      user.url.get                   mustEqual "http://lawver.net"
+      user.isProtected               mustEqual false
+      user.followersCount            mustEqual 1049
+      user.profileBackgroundColor    mustEqual "003030"
+      user.profileTextColor          mustEqual "003030"
+      user.profileLinkColor          mustEqual "DC4104"
+      user.profileSidebarFillColor   mustEqual "E6E2B0"
+      user.profileSidebarBorderColor mustEqual "A8A37E"
+      user.friendsCount              mustEqual 268
+      user.createdAt                 mustEqual User.createdAtDateFormat.parse("Sat Jul 29 18:23:37 +0000 2006")
+      user.favouritesCount           mustEqual 148
+      user.utcOffset.get             mustEqual -18000
+      user.timeZone.get              mustEqual "Eastern Time (US & Canada)"
+      user.profileBackgroundImageUrl mustEqual "http://a1.twimg.com/profile_background_images/1391712/twitter_back.png"
+      user.profileBackgroundTile     mustEqual true
+      user.profileUseBackgroundImage mustEqual true
+      user.notifications.get         mustEqual false
+      user.geoEnabled                mustEqual true
+      user.verified                  mustEqual false
+      user.statusesCount             mustEqual 10561
+      user.lang                      mustEqual "en"
+      user.contributorsEnabled       mustEqual false
+      user.followRequestSent.get     mustEqual false
     }
   }
 
-  val json3404 = """{
+  val json = """{
       "name": "Kevin Lawver",
       "profile_sidebar_border_color": "A8A37E",
       "profile_background_tile": true,

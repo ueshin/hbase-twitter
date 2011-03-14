@@ -1,7 +1,6 @@
 package st.happy_camper.hbase.twitter.bulkload.entity
 
 import _root_.org.codehaus.jackson.JsonNode
-import _root_.org.codehaus.jackson.map.ObjectMapper
 
 class UserMention(
   val id: Long,
@@ -12,19 +11,16 @@ class UserMention(
 
 object UserMention {
 
-  def apply(json: String) : UserMention = {
-    Option(new ObjectMapper().readTree(json)) match {
-      case Some(root) => new UserMention(
-        root.path("id").getLongValue,
-        root.path("screen_name").getTextValue,
-        root.path("name").getTextValue,
-        root.path("indices").toString
-      )
-      case _ => throw new RuntimeException("UserMention expected.")
-    }
+  def apply(json: JsonNode) : UserMention = {
+    new UserMention(
+      json.path("id").getLongValue,
+      json.path("screen_name").getTextValue,
+      json.path("name").getTextValue,
+      json.path("indices").toString
+    )
   }
 
-  def unapply(json: String) : Option[UserMention] = {
+  def unapply(json: JsonNode) : Option[UserMention] = {
     try {
       Option(UserMention(json))
     }

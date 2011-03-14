@@ -1,7 +1,6 @@
 package st.happy_camper.hbase.twitter.bulkload.entity
 
 import _root_.org.codehaus.jackson.JsonNode
-import _root_.org.codehaus.jackson.map.ObjectMapper
 
 class Url(
   val url: String,
@@ -11,20 +10,17 @@ class Url(
 
 object Url {
 
-  def apply(json: String) : Url = {
-    Option(new ObjectMapper().readTree(json)) match {
-      case Some(root) => new Url(
-        root.path("url").getTextValue,
-        Option(root.path("expanded_url").getTextValue),
-        root.path("indices").toString
-      )
-      case _ => throw new RuntimeException("Url expected.")
-    }
+  def apply(json: JsonNode) : Url = {
+    new Url(
+      json.path("url").getTextValue,
+      Option(json.path("expanded_url").getTextValue),
+      json.path("indices").toString
+    )
   }
 
-  def unapply(json: String) : Option[Url] = {
+  def unapply(json: JsonNode) : Option[Url] = {
     try {
-      Some(Url(json))
+      Option(Url(json))
     }
     catch {
       case _ => None
