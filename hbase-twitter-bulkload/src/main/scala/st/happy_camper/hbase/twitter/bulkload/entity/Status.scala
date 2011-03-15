@@ -43,7 +43,7 @@ object Status {
       Option(json.path("in_reply_to_screen_name").getTextValue),
       json.path("retweeted").getBooleanValue,
       if(json.path("retweet_count").isNumber) Option(json.path("retweet_count").getLongValue) else None,
-      Option(Place(json.path("place"))),
+      if(json.path("place").isNull) None else Option(Place(json.path("place"))),
       json.path("entities").path("user_mentions").map(UserMention(_)).toList,
       json.path("entities").path("urls").map(Url(_)).toList,
       json.path("eitnties").path("hashtags").map(Hashtag(_)).toList,
