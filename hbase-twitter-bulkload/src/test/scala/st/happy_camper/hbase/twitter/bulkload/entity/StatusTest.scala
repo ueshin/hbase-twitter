@@ -16,29 +16,32 @@ object StatusSpec extends Specification {
     "apply JSON" in {
       val status = Status(new ObjectMapper().readTree(json))
 
-      status.createdAt           mustEqual Status.createdAtDateFormat.parse("Fri Jul 16 16:55:52 +0000 2010")
       status.id                  mustEqual 18700688341L
-      status.text                mustEqual "Anything is possible when you're in the library... with a celestial sandwich: http://bit.ly/libraryman (via @iamcal)"
+      status.createdAt           mustEqual Status.createdAtDateFormat.parse("Fri Jul 16 16:55:52 +0000 2010")
+
       status.source              mustEqual "web"
+      status.text                mustEqual "Anything is possible when you're in the library... with a celestial sandwich: http://bit.ly/libraryman (via @iamcal)"
       status.truncated           mustEqual false
+
       status.inReplyToStatusId   mustEqual None
       status.inReplyToUserId     mustEqual None
-      status.favorited           mustEqual false
       status.inReplyToScreenName mustEqual None
+
+      status.favorited           mustEqual false
       status.retweeted           mustEqual false
-      status.retweetCount.get    mustEqual 98L
+      status.retweetCount        mustEqual 98L
 
       status.place match {
         case Some(place) => {
-          place.id              mustEqual "5a110d312052166f"
-          place.name            mustEqual "San Francisco"
-          place.fullName        mustEqual "San Francisco, CA"
-          place.placeType       mustEqual "city"
-          place.url             mustEqual "http://api.twitter.com/1/geo/id/5a110d312052166f.json"
-          place.boundingBox     mustEqual "[[[-122.51368188,37.70813196],[-122.35845384,37.70813196],[-122.35845384,37.83245301],[-122.51368188,37.83245301]]]"
-          place.boundingBoxType mustEqual "Polygon"
-          place.country         mustEqual "The United States of America"
-          place.countryCode     mustEqual "US"
+          place.id                  mustEqual "5a110d312052166f"
+          place.name                mustEqual "San Francisco"
+          place.fullName            mustEqual "San Francisco, CA"
+          place.url                 mustEqual "http://api.twitter.com/1/geo/id/5a110d312052166f.json"
+          place.placeType           mustEqual "city"
+          place.country             mustEqual "The United States of America"
+          place.countryCode         mustEqual "US"
+          place.boundingBox.get     mustEqual "[[[-122.51368188,37.70813196],[-122.35845384,37.70813196],[-122.35845384,37.83245301],[-122.51368188,37.83245301]]]"
+          place.boundingBoxType.get mustEqual "Polygon"
         }
         case _ => fail
       }
@@ -46,8 +49,8 @@ object StatusSpec extends Specification {
       status.userMentions match {
         case List(userMention) => {
           userMention.id         mustEqual 6104L
-          userMention.screenName mustEqual "iamcal"
           userMention.name       mustEqual "Cal Henderson"
+          userMention.screenName mustEqual "iamcal"
           userMention.indices    mustEqual "[108,115]"
         }
         case _ => fail
@@ -65,35 +68,44 @@ object StatusSpec extends Specification {
       status.hashtags mustEqual Nil
 
       val user = status.user
-      user.id                        mustEqual 635543
-      user.name                      mustEqual "Daniel Burka"
-      user.screenName                mustEqual "dburka"
-      user.location.get              mustEqual "San Francisco"
-      user.description.get           mustEqual "Director of design at Tiny Speck. Ex-Creative director at Digg. CSS. Design. UX. Climbing. Cycling. Chilaquiles mmm."
-      user.profileImageUrl           mustEqual "http://a3.twimg.com/profile_images/74260755/2009-square-small_normal.jpg"
-      user.url.get                   mustEqual "http://deltatangobravo.com"
-      user.isProtected               mustEqual false
-      user.followersCount            mustEqual 9950
-      user.profileBackgroundColor    mustEqual "BADFCD"
-      user.profileTextColor          mustEqual "0C3E53"
-      user.profileLinkColor          mustEqual "5a0d91"
-      user.profileSidebarFillColor   mustEqual "f1ccff"
-      user.profileSidebarBorderColor mustEqual "a655ec"
-      user.friendsCount              mustEqual 219
-      user.createdAt                 mustEqual User.createdAtDateFormat.parse("Mon Jan 15 15:22:14 +0000 2007")
-      user.favouritesCount           mustEqual 92
-      user.utcOffset.get             mustEqual -28800
-      user.timeZone.get              mustEqual "Pacific Time (US & Canada)"
-      user.profileBackgroundImageUrl mustEqual "http://a3.twimg.com/profile_background_images/4444585/back.png"
-      user.profileBackgroundTile     mustEqual true
-      user.profileUseBackgroundImage mustEqual true
-      user.notifications.get         mustEqual false
-      user.geoEnabled                mustEqual true
-      user.verified                  mustEqual false
-      user.statusesCount             mustEqual 806
-      user.lang                      mustEqual "en"
-      user.contributorsEnabled       mustEqual false
-      user.followRequestSent.get     mustEqual false
+      user.id                            mustEqual 635543
+      user.name                          mustEqual "Daniel Burka"
+      user.screenName                    mustEqual "dburka"
+      user.createdAt                     mustEqual User.createdAtDateFormat.parse("Mon Jan 15 15:22:14 +0000 2007")
+      user.description.get               mustEqual "Director of design at Tiny Speck. Ex-Creative director at Digg. CSS. Design. UX. Climbing. Cycling. Chilaquiles mmm."
+      user.url.get                       mustEqual "http://deltatangobravo.com"
+
+      user.lang                          mustEqual "en"
+      user.location.get                  mustEqual "San Francisco"
+      user.timeZone.get                  mustEqual "Pacific Time (US & Canada)"
+      user.utcOffset.get                 mustEqual -28800
+
+      user.statusesCount                 mustEqual 806
+      user.favouritesCount               mustEqual 92
+      user.followersCount                mustEqual 9950
+      user.friendsCount                  mustEqual 219
+      user.listedCount                   mustEqual 0
+
+      user.profileImageUrl               mustEqual "http://a3.twimg.com/profile_images/74260755/2009-square-small_normal.jpg"
+      user.profileBackgroundImageUrl     mustEqual "http://a3.twimg.com/profile_background_images/4444585/back.png"
+      user.profileTextColor.get          mustEqual "0C3E53"
+      user.profileLinkColor.get          mustEqual "5a0d91"
+      user.profileSidebarFillColor.get   mustEqual "f1ccff"
+      user.profileSidebarBorderColor.get mustEqual "a655ec"
+      user.profileBackgroundColor.get    mustEqual "BADFCD"
+      user.profileBackgroundTile         mustEqual true
+      user.profileUseBackgroundImage     mustEqual true
+
+      user.isProtected                   mustEqual false
+      user.following                     mustEqual true
+      user.followRequestSent             mustEqual false
+
+      user.notifications                 mustEqual false
+      user.verified                      mustEqual false
+      user.geoEnabled                    mustEqual true
+      user.contributorsEnabled           mustEqual false
+      user.showAllInlineMedia            mustEqual false
+      user.isTranslator                  mustEqual false
     }
   }
 

@@ -4,8 +4,8 @@ import _root_.org.codehaus.jackson.JsonNode
 
 class UserMention(
   val id: Long,
-  val screenName: String,
   val name: String,
+  val screenName: String,
   val indices: String
 )
 
@@ -14,8 +14,8 @@ object UserMention {
   def apply(json: JsonNode) : UserMention = {
     new UserMention(
       json.path("id").getLongValue,
-      json.path("screen_name").getTextValue,
       json.path("name").getTextValue,
+      json.path("screen_name").getTextValue,
       json.path("indices").toString
     )
   }

@@ -17,8 +17,8 @@ object UserMentionSpec extends Specification {
       val userMention = UserMention(new ObjectMapper().readTree(json))
 
       userMention.id         mustEqual 6104L
-      userMention.screenName mustEqual "iamcal"
       userMention.name       mustEqual "Cal Henderson"
+      userMention.screenName mustEqual "iamcal"
       userMention.indices    mustEqual "[108,115]"
     }
   }

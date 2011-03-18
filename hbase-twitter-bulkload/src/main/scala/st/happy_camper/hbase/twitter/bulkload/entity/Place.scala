@@ -6,12 +6,13 @@ class Place(
   val id: String,
   val name: String,
   val fullName: String,
-  val placeType: String,
   val url: String,
-  val boundingBox: String,
-  val boundingBoxType: String,
+  val placeType: String,
   val country: String,
-  val countryCode: String
+  val countryCode: String,
+  val boundingBox: Option[String],
+  val boundingBoxType: Option[String],
+  val attributes: String
 )
 
 object Place {
@@ -21,12 +22,13 @@ object Place {
       json.path("id").getTextValue,
       json.path("name").getTextValue,
       json.path("full_name").getTextValue,
-      json.path("place_type").getTextValue,
       json.path("url").getTextValue,
-      json.path("bounding_box").path("coordinates").toString,
-      json.path("bounding_box").path("type").getTextValue,
+      json.path("place_type").getTextValue,
       json.path("country").getTextValue,
-      json.path("country_code").getTextValue
+      json.path("country_code").getTextValue,
+      if(json.path("bounding_box").isNull) None else Option(json.path("bounding_box").path("coordinates").toString),
+      if(json.path("bounding_box").isNull) None else Option(json.path("bounding_box").path("type").getTextValue),
+      json.path("attributes").toString
     )
   }
 
