@@ -55,7 +55,7 @@ object Status {
       if(json.path("place").isNull) None else Option(Place(json.path("place"))),
       json.path("entities").path("user_mentions").map(UserMention(_)).toList,
       json.path("entities").path("urls").map(Url(_)).toList,
-      json.path("eitnties").path("hashtags").map(Hashtag(_)).toList,
+      json.path("entities").path("hashtags").map(Hashtag(_)).toList,
 
       User(json.path("user"))
     )
