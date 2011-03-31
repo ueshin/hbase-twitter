@@ -244,17 +244,6 @@
 			</dependency>
 
 			<dependency>
-				<groupId>org.codehaus.jackson</groupId>
-				<artifactId>jackson-core-asl</artifactId>
-				<version>1.5.8</version>
-			</dependency>
-			<dependency>
-				<groupId>org.codehaus.jackson</groupId>
-				<artifactId>jackson-mapper-asl</artifactId>
-				<version>1.5.8</version>
-			</dependency>
-
-			<dependency>
 				<groupId>org.scala-tools.testing</groupId>
 				<artifactId>specs_2.8.1</artifactId>
 				<version>1.6.7.2</version>
