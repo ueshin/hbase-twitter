@@ -45,9 +45,7 @@ class User(
   val contributorsEnabled: Boolean,
   val showAllInlineMedia: Boolean,
   val isTranslator: Boolean
-) {
-  val key = User.createKey(id)
-}
+)
 
 object User {
 

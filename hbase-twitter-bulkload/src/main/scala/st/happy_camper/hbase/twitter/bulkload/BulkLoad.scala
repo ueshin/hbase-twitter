@@ -39,6 +39,10 @@ class BulkLoad(conf: Configuration = HBaseConfiguration.create) extends Configur
 }
 
 object BulkLoad {
+  val Salt = (0x0 to 0xf).map(_.asInstanceOf[Byte]).toList
+
+  def makeSalt(ts: Long) = Salt((ts % Salt.size).asInstanceOf[Int])
+
   def main(args: Array[String]) {
     exit(ToolRunner.run(new BulkLoad, args))
   }
