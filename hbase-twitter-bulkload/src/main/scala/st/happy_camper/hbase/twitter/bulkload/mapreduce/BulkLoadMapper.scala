@@ -24,7 +24,7 @@ class BulkLoadMapper extends Mapper[LongWritable, Text, ImmutableBytesWritable, 
 
       case Status(status) => {
 
-        keyout.set(Bytes.add(Array((flumeEvent.timestamp & 0xf).asInstanceOf[Byte]), Long.MaxValue - flumeEvent.timestamp, status.id))
+        keyout.set(Bytes.add(status.user.lang, Long.MaxValue - status.createdAt.getTime, status.id))
 
         val put = new Put(keyout.get, flumeEvent.timestamp)
         put.add("status", "id", status.id)
