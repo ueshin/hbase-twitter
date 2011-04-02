@@ -31,8 +31,9 @@ class BulkLoad(conf: Configuration = HBaseConfiguration.create) extends Configur
     job.setMapOutputKeyClass(classOf[ImmutableBytesWritable])
     job.setMapOutputValueClass(classOf[Put])
 
-    TableMapReduceUtil.setNumReduceTasks(TableName, job)
-    TableMapReduceUtil.initTableReducerJob(TableName, null, job, classOf[HRegionPartitioner[_,_]])
+    job.setNumReduceTasks(BulkLoad.Salt.size)
+    TableMapReduceUtil.limitNumReduceTasks(TableName, job)
+    TableMapReduceUtil.initTableReducerJob(TableName, null, job, classOf[SaltPartitioner])
 
     if(job.waitForCompletion(true)) 0 else 1
   }
