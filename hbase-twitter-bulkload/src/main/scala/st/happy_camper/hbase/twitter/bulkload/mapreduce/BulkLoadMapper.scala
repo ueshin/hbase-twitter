@@ -24,7 +24,7 @@ class BulkLoadMapper extends Mapper[LongWritable, Text, ImmutableBytesWritable, 
 
       case Status(status) => {
 
-        keyout.set(makeKey(flumeEvent.timestamp, status.id))
+        keyout.set(Bytes.add(status.user.id, Long.MaxValue - status.id))
 
         val put = new Put(keyout.get, flumeEvent.timestamp)
         put.add("status", "id", status.id)
@@ -125,7 +125,7 @@ class BulkLoadMapper extends Mapper[LongWritable, Text, ImmutableBytesWritable, 
       }
       case Delete(delete) => {
 
-        keyout.set(makeKey(flumeEvent.timestamp, delete.id))
+        keyout.set(Bytes.add(delete.userId, Long.MaxValue - delete.id))
 
         val put = new Put(keyout.get, flumeEvent.timestamp)
         put.add("delete", "id", delete.id)
@@ -138,5 +138,4 @@ class BulkLoadMapper extends Mapper[LongWritable, Text, ImmutableBytesWritable, 
     }
   }
 
-  private def makeKey(ts: Long, id: Long) = Bytes.add(BulkLoad.makeSalt(ts), Long.MaxValue - ts, id)
 }

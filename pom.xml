@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>st.happy_camper.hadoop</groupId>
 		<artifactId>hadoop-client</artifactId>
-		<version>CDH3B4-1-SNAPSHOT</version>
+		<version>CDH3B4-1</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -136,7 +136,7 @@
 						</execution>
 					</executions>
 					<configuration>
-						<extraJvmArguments>-server</extraJvmArguments>
+						<extraJvmArguments>-server -Djava.library.path=$REPO/native</extraJvmArguments>
 						<configurationDirectory>conf</configurationDirectory>
 						<repositoryLayout>flat</repositoryLayout>
 						<repositoryName>lib</repositoryName>
@@ -163,6 +163,17 @@
 						<directory>src/main/resources</directory>
 					</resource>
 				</resources>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.codehaus.mojo</groupId>
+							<artifactId>appassembler-maven-plugin</artifactId>
+							<configuration>
+								<configurationSourceDirectory>src/pseudo/config</configurationSourceDirectory>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
 			</build>
 		</profile>
 		<profile>
@@ -176,6 +187,17 @@
 						<directory>src/main/resources</directory>
 					</resource>
 				</resources>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.codehaus.mojo</groupId>
+							<artifactId>appassembler-maven-plugin</artifactId>
+							<configuration>
+								<configurationSourceDirectory>src/production/config</configurationSourceDirectory>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
 			</build>
 		</profile>
 	</profiles>
@@ -185,6 +207,11 @@
 		<dependency>
 			<groupId>org.apache.hbase</groupId>
 			<artifactId>hbase</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.hadoop.gplcompression</groupId>
+			<artifactId>hadoop-lzo</artifactId>
+			<version>0.4.10</version>
 		</dependency>
 
 		<dependency>
@@ -202,27 +229,6 @@
 					<artifactId>commons-logging</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.6.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.6.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<version>1.6.1</version>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.16</version>
 		</dependency>
 
 		<dependency>
@@ -276,12 +282,6 @@
 			<releases>
 				<enabled>false</enabled>
 			</releases>
-		</repository>
-
-		<repository>
-			<id>repository.cloudera.com</id>
-			<name>Cloudera Releases</name>
-			<url>https://repository.cloudera.com/content/repositories/releases</url>
 		</repository>
 
 		<repository>

@@ -31,18 +31,14 @@ class BulkLoad(conf: Configuration = HBaseConfiguration.create) extends Configur
     job.setMapOutputKeyClass(classOf[ImmutableBytesWritable])
     job.setMapOutputValueClass(classOf[Put])
 
-    job.setNumReduceTasks(BulkLoad.Salt.size)
-    TableMapReduceUtil.limitNumReduceTasks(TableName, job)
-    TableMapReduceUtil.initTableReducerJob(TableName, null, job, classOf[SaltPartitioner])
+    TableMapReduceUtil.setNumReduceTasks(TableName, job)
+    TableMapReduceUtil.initTableReducerJob(TableName, null, job, classOf[HRegionPartitioner[_, _]])
 
     if(job.waitForCompletion(true)) 0 else 1
   }
 }
 
 object BulkLoad {
-  val Salt = (0x0 to 0xf).map(_.asInstanceOf[Byte]).toList
-
-  def makeSalt(ts: Long) = Salt((ts % Salt.size).asInstanceOf[Int])
 
   def main(args: Array[String]) {
     exit(ToolRunner.run(new BulkLoad, args))
