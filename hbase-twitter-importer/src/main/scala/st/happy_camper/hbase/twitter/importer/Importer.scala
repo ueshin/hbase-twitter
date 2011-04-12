@@ -1,4 +1,4 @@
-package st.happy_camper.hbase.twitter.bulkload
+package st.happy_camper.hbase.twitter.importer
 
 import mapreduce._
 
@@ -14,20 +14,20 @@ import _root_.org.apache.hadoop.hbase.client.{ HTable, Put }
 import _root_.org.apache.hadoop.hbase.io.ImmutableBytesWritable
 import _root_.org.apache.hadoop.hbase.mapreduce.{ TableMapReduceUtil, HRegionPartitioner }
 
-class BulkLoad(conf: Configuration = HBaseConfiguration.create) extends Configured(conf) with Tool {
+class Importer(conf: Configuration = HBaseConfiguration.create) extends Configured(conf) with Tool {
 
   val TableName = "timeline"
 
   override def run(args: Array[String]) : Int = {
     val input = args(0)
 
-    val job = new Job(getConf, "BulkLoader: " + input)
+    val job = new Job(getConf, "Importer: " + input)
     job.setJarByClass(getClass)
 
     job.setInputFormatClass(classOf[TextInputFormat])
     FileInputFormat.setInputPaths(job, new Path(input))
 
-    job.setMapperClass(classOf[BulkLoadMapper])
+    job.setMapperClass(classOf[ImporterMapper])
     job.setMapOutputKeyClass(classOf[ImmutableBytesWritable])
     job.setMapOutputValueClass(classOf[Put])
 
@@ -38,9 +38,9 @@ class BulkLoad(conf: Configuration = HBaseConfiguration.create) extends Configur
   }
 }
 
-object BulkLoad {
+object Import {
 
   def main(args: Array[String]) {
-    exit(ToolRunner.run(new BulkLoad, args))
+    exit(ToolRunner.run(new Importer, args))
   }
 }

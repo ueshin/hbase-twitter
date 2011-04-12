@@ -1,4 +1,4 @@
-package st.happy_camper.hbase.twitter.bulkload
+package st.happy_camper.hbase.twitter.importer
 package mapreduce
 
 import entity._
@@ -12,7 +12,7 @@ import _root_.org.apache.hadoop.hbase.util.Bytes
 
 import _root_.org.codehaus.jackson.map.ObjectMapper
 
-class BulkLoadMapper extends Mapper[LongWritable, Text, ImmutableBytesWritable, Put] {
+class ImporterMapper extends Mapper[LongWritable, Text, ImmutableBytesWritable, Put] {
 
   type Context = Mapper[LongWritable, Text, ImmutableBytesWritable, Put]#Context
 

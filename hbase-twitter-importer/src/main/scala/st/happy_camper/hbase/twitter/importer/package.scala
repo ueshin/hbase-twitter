@@ -4,7 +4,7 @@ import _root_.org.apache.hadoop.io.Text
 
 import _root_.org.apache.hadoop.hbase.util.Bytes
 
-package object bulkload {
+package object importer {
 
   implicit def stringToBytes(s: String)   = Bytes.toBytes(s)
   implicit def booleanToBytes(b: Boolean) = Bytes.toBytes(b)

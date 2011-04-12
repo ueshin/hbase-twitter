@@ -34,8 +34,8 @@
 				<configuration>
 					<programs>
 						<program>
-							<mainClass>st.happy_camper.hbase.twitter.bulkload.BulkLoad</mainClass>
-							<name>bulkload</name>
+							<mainClass>st.happy_camper.hbase.twitter.importer.Importer</mainClass>
+							<name>importer</name>
 						</program>
 					</programs>
 				</configuration>

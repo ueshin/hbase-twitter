@@ -1,4 +1,4 @@
-package st.happy_camper.hbase.twitter.bulkload.entity
+package st.happy_camper.hbase.twitter.importer.entity
 
 import _root_.scala.collection.JavaConversions._
 
