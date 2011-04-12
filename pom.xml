@@ -47,12 +47,11 @@
 	</issueManagement>
 
 	<modules>
-		<module>hbase-twitter-bulkload</module>
+		<module>hbase-twitter-import</module>
 	</modules>
 
 	<properties>
 		<scala.version>2.8.1</scala.version>
-		<hbase.version>0.90.1-CDH3B4</hbase.version>
 	</properties>
 
 	<build>
