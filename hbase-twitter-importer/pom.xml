@@ -9,8 +9,8 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>st.happy_camper.hbase</groupId>
-	<artifactId>hbase-twitter-import</artifactId>
-	<name>hbase-twitter-import</name>
+	<artifactId>hbase-twitter-importer</artifactId>
+	<name>hbase-twitter-importer</name>
 
 	<build>
 		<sourceDirectory>src/main/scala</sourceDirectory>
