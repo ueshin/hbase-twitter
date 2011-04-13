@@ -38,7 +38,7 @@ class Importer(conf: Configuration = HBaseConfiguration.create) extends Configur
   }
 }
 
-object Import {
+object Importer {
 
   def main(args: Array[String]) {
     exit(ToolRunner.run(new Importer, args))
