@@ -47,6 +47,7 @@
 	</issueManagement>
 
 	<modules>
+		<module>hbase-twitter-core</module>
 		<module>hbase-twitter-importer</module>
 	</modules>
 
