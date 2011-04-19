@@ -1,6 +1,9 @@
-package st.happy_camper.hbase.twitter.importer
+package st.happy_camper.hbase.twitter
+package importer
 
 import mapreduce._
+
+import _root_.st.happy_camper.hbase.twitter.entity._
 
 import _root_.org.apache.hadoop.conf.{ Configuration, Configured }
 import _root_.org.apache.hadoop.fs.Path
@@ -33,6 +36,8 @@ class Importer(conf: Configuration = HBaseConfiguration.create) extends Configur
 
     TableMapReduceUtil.setNumReduceTasks(TableName, job)
     TableMapReduceUtil.initTableReducerJob(TableName, null, job, classOf[HRegionPartitioner[_, _]])
+
+    TableMapReduceUtil.addDependencyJars(job.getConfiguration, classOf[Status])
 
     if(job.waitForCompletion(true)) 0 else 1
   }

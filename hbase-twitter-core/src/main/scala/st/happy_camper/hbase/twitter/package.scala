@@ -1,10 +1,10 @@
-package st.happy_camper.hbase.twitter
+package st.happy_camper.hbase
 
 import _root_.org.apache.hadoop.io.Text
 
 import _root_.org.apache.hadoop.hbase.util.Bytes
 
-package object importer {
+package object twitter {
 
   implicit def stringToBytes(s: String)   = Bytes.toBytes(s)
   implicit def booleanToBytes(b: Boolean) = Bytes.toBytes(b)

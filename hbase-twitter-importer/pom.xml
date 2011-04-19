@@ -94,6 +94,12 @@
 	<dependencies>
 
 		<dependency>
+			<groupId>st.happy_camper.hbase</groupId>
+			<artifactId>hbase-twitter-core</artifactId>
+			<version>${version}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-library</artifactId>
 		</dependency>
