@@ -4,8 +4,6 @@ package mapreduce
 
 import entity._
 
-import _root_.st.happy_camper.hbase.twitter.entity._
-
 import _root_.org.apache.hadoop.io.{ LongWritable, Text }
 import _root_.org.apache.hadoop.mapreduce.Mapper
 
