@@ -1,17 +1,36 @@
+/*
+ * Copyright 2010-2012 Happy-Camper Street.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
 package st.happy_camper.hbase.twitter
 package importer
 package entity
 
-import _root_.st.happy_camper.hbase.twitter.entity._
+import java.text.SimpleDateFormat
+import java.util.Locale
 
-import _root_.java.util.Locale
-import _root_.java.text.SimpleDateFormat
+import org.codehaus.jackson.JsonNode
 
-import _root_.org.codehaus.jackson.JsonNode
+import st.happy_camper.hbase.twitter.entity.User
 
+/**
+ * @author ueshin
+ *
+ */
 object User {
 
-  def apply(json: JsonNode) : User = {
+  def apply(json: JsonNode): User = {
     new User(
       json.path("id").getLongValue,
       json.path("name").getTextValue,
@@ -23,7 +42,7 @@ object User {
       json.path("lang").getTextValue,
       Option(json.path("location").getTextValue),
       Option(json.path("time_zone").getTextValue),
-      if(json.path("utc_offset").isNumber) Option(json.path("utc_offset").getIntValue) else None,
+      if (json.path("utc_offset").isNumber) Option(json.path("utc_offset").getIntValue) else None,
 
       json.path("statuses_count").getIntValue,
       json.path("favourites_count").getIntValue,
@@ -50,15 +69,13 @@ object User {
       json.path("geo_enabled").getBooleanValue,
       json.path("contributors_enabled").getBooleanValue,
       json.path("show_all_inline_media").getBooleanValue,
-      json.path("is_translator").getBooleanValue
-    )
+      json.path("is_translator").getBooleanValue)
   }
 
-  def unapplly(json: JsonNode) : Option[User] = {
+  def unapplly(json: JsonNode): Option[User] = {
     try {
       Option(User(json))
-    }
-    catch {
+    } catch {
       case _ => None
     }
   }

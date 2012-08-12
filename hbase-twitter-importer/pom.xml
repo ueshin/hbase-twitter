@@ -12,22 +12,14 @@
 	<artifactId>hbase-twitter-importer</artifactId>
 	<name>hbase-twitter-importer</name>
 
+	<scm>
+		<connection>scm:git://github.com/ueshin/hbase-twitter.git</connection>
+		<developerConnection>scm:git:git@github.com:ueshin/hbase-twitter.git</developerConnection>
+		<url>https://github.com/ueshin/hbase-twitter/tree/master/hbase-twitter-importer</url>
+	</scm>
+
 	<build>
-		<sourceDirectory>src/main/scala</sourceDirectory>
-		<testSourceDirectory>src/test/scala</testSourceDirectory>
 		<plugins>
-			<plugin>
-				<groupId>org.scala-tools</groupId>
-				<artifactId>maven-scala-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>compile</goal>
-							<goal>testCompile</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>appassembler-maven-plugin</artifactId>
@@ -38,23 +30,6 @@
 							<name>importer</name>
 						</program>
 					</programs>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<configuration>
-					<downloadSources>true</downloadSources>
-					<buildcommands>
-						<buildcommand>ch.epfl.lamp.sdt.core.scalabuilder</buildcommand>
-					</buildcommands>
-					<additionalProjectnatures>
-						<projectnature>ch.epfl.lamp.sdt.core.scalanature</projectnature>
-					</additionalProjectnatures>
-					<classpathContainers>
-						<classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
-						<classpathContainer>ch.epfl.lamp.sdt.launching.SCALA_CONTAINER</classpathContainer>
-					</classpathContainers>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -92,24 +67,11 @@
 	</profiles>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>st.happy_camper.hbase</groupId>
 			<artifactId>hbase-twitter-core</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency>
-
-		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-library</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.scala-tools.testing</groupId>
-			<artifactId>specs_2.8.1</artifactId>
-			<scope>test</scope>
-		</dependency>
-
 	</dependencies>
 
 </project>

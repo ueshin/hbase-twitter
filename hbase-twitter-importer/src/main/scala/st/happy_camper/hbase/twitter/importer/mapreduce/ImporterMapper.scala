@@ -1,3 +1,18 @@
+/*
+ * Copyright 2010-2012 Happy-Camper Street.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
 package st.happy_camper.hbase.twitter
 package importer
 package mapreduce
@@ -13,6 +28,10 @@ import _root_.org.apache.hadoop.hbase.util.Bytes
 
 import _root_.org.codehaus.jackson.map.ObjectMapper
 
+/**
+ * @author ueshin
+ *
+ */
 class ImporterMapper extends Mapper[LongWritable, Text, ImmutableBytesWritable, Put] {
 
   type Context = Mapper[LongWritable, Text, ImmutableBytesWritable, Put]#Context
@@ -44,41 +63,45 @@ class ImporterMapper extends Mapper[LongWritable, Text, ImmutableBytesWritable, 
         put.add("status", "retweet_count", status.retweetCount)
 
         status.place.foreach {
-          place => {
-            put.add("place", "id", place.id)
-            put.add("place", "name", place.name)
-            put.add("place", "full_name", place.fullName)
-            put.add("place", "url", place.url)
-            put.add("place", "place_type", place.placeType)
-            put.add("place", "country", place.country)
-            put.add("place", "country_code", place.countryCode)
-            place.boundingBox.foreach(put.add("place", "bounding_box", _))
-            place.boundingBoxType.foreach(put.add("place", "bounding_box_type", _))
-            put.add("place", "attributes", place.attributes)
-          }
+          place =>
+            {
+              put.add("place", "id", place.id)
+              put.add("place", "name", place.name)
+              put.add("place", "full_name", place.fullName)
+              put.add("place", "url", place.url)
+              put.add("place", "place_type", place.placeType)
+              put.add("place", "country", place.country)
+              put.add("place", "country_code", place.countryCode)
+              place.boundingBox.foreach(put.add("place", "bounding_box", _))
+              place.boundingBoxType.foreach(put.add("place", "bounding_box_type", _))
+              put.add("place", "attributes", place.attributes)
+            }
         }
 
         status.userMentions.foreach {
-          userMention => {
-            put.add("user_mentions", Bytes.add(userMention.id, "id"), userMention.id)
-            put.add("user_mentions", Bytes.add(userMention.id, "name"), userMention.name)
-            put.add("user_mentions", Bytes.add(userMention.id, "screen_name"), userMention.screenName)
-            put.add("user_mentions", Bytes.add(userMention.id, "indices"), userMention.indices)
-          }
+          userMention =>
+            {
+              put.add("user_mentions", Bytes.add(userMention.id, "id"), userMention.id)
+              put.add("user_mentions", Bytes.add(userMention.id, "name"), userMention.name)
+              put.add("user_mentions", Bytes.add(userMention.id, "screen_name"), userMention.screenName)
+              put.add("user_mentions", Bytes.add(userMention.id, "indices"), userMention.indices)
+            }
         }
 
         status.urls.foreach {
-          url => {
-            put.add("urls", Bytes.add(url.url, "url"), url.url)
-            url.expandedUrl.foreach(put.add("urls", Bytes.add(url.url, "expanded_url"), _))
-            put.add("urls", Bytes.add(url.url, "indices"), url.indices)
-          }
+          url =>
+            {
+              put.add("urls", Bytes.add(url.url, "url"), url.url)
+              url.expandedUrl.foreach(put.add("urls", Bytes.add(url.url, "expanded_url"), _))
+              put.add("urls", Bytes.add(url.url, "indices"), url.indices)
+            }
         }
 
         status.hashtags.foreach {
-          hashtag => {
-            put.add("hashtags", hashtag.text, hashtag.indices)
-          }
+          hashtag =>
+            {
+              put.add("hashtags", hashtag.text, hashtag.indices)
+            }
         }
 
         val user = status.user

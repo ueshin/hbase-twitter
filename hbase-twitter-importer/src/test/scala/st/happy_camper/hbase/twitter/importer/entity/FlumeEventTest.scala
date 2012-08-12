@@ -1,33 +1,46 @@
+/*
+ * Copyright 2010-2012 Happy-Camper Street.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
 package st.happy_camper.hbase.twitter.importer.entity
 
-import _root_.org.specs._
-import _root_.org.specs.runner.{ ConsoleRunner, JUnit4 }
+import org.codehaus.jackson.map.ObjectMapper
+import org.junit.runner.RunWith
+import org.specs2.mutable.Specification
+import org.specs2.runner.JUnitRunner
 
-import _root_.org.codehaus.jackson.map.ObjectMapper
+@RunWith(classOf[JUnitRunner])
+object FlumeEventTest extends FlumeEventSpec
 
-class FlumeEventTest extends JUnit4(FlumeEventSpec)
-
-object FlumeEventSpecRunner extends ConsoleRunner(FlumeEventSpec)
-
-object FlumeEventSpec extends Specification {
+class FlumeEventSpec extends Specification {
 
   "FlumeEvent" should {
 
     "apply JSON" in {
       val flumeEvent = FlumeEvent(new ObjectMapper().readTree(json))
 
-      flumeEvent.body      mustEqual "event body"
+      flumeEvent.body mustEqual "event body"
       flumeEvent.timestamp mustEqual 1299160307737L
-      flumeEvent.pri       mustEqual "INFO"
-//    flumeEvent.nanos     mustEqual 1299160347119674000L
-      flumeEvent.host      mustEqual "127.0.0.1"
-      flumeEvent.fields    mustEqual Map(
-        "AckTag"      -> "log....seq",
-        "AckType"     -> "msg",
+      flumeEvent.pri mustEqual "INFO"
+      //    flumeEvent.nanos     mustEqual 1299160347119674000L
+      flumeEvent.host mustEqual "127.0.0.1"
+      flumeEvent.fields mustEqual Map(
+        "AckTag" -> "log....seq",
+        "AckType" -> "msg",
         "AckChecksum" -> "\\u0000",
-        "service"     -> "Twitter",
-        "rolltag"     -> "log....seq"
-      )
+        "service" -> "Twitter",
+        "rolltag" -> "log....seq")
     }
   }
 
